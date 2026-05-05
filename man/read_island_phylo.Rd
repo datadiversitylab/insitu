@@ -2,10 +2,18 @@
 % Please edit documentation in R/read_island_phylo.R
 \name{read_island_phylo}
 \alias{read_island_phylo}
-\title{Imports and validates dated phylogenies with associated island occurence data}
+\title{Imports and validates dated phylogenies with associated island occurrence data}
 \usage{
-read_island_phylo()
+read_island_phylo(phy_path, occ_path)
+}
+\arguments{
+\item{phy_path}{The local file path to the tree file}
+
+\item{occ_path}{The local file path to the occurrence data file}
+}
+\value{
+A list with 2 items: the pruned phylogenetic tree and associated data
 }
 \description{
-Imports and validates dated phylogenies with associated island occurence data
+Requirements: make sure that the row names for your data are the species names
 }
