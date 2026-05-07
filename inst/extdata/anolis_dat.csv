@@ -1,31 +1,35 @@
-"","species","island"
-"occultus","occultus","Puerto Rico"
-"luteogularis","luteogularis","Cuba"
-"equestris","equestris","Cuba"
-"coelestinus","coelestinus","Hispaniola"
-"aliniger","aliniger","Hispaniola"
-"bahorucoensis","bahorucoensis","Hispaniola"
-"olssoni","olssoni","Hispaniola"
-"insolitus","insolitus","Hispaniola"
-"cuvieri","cuvieri","Puerto Rico"
-"barahonae","barahonae","Hispaniola"
-"brevirostris","brevirostris","Hispaniola"
-"distichus","distichus","Hispaniola"
-"cristatellus","cristatellus","Puerto Rico"
-"stratulus","stratulus","Puerto Rico"
-"krugi","krugi","Puerto Rico"
-"strahmi","strahmi","Hispaniola"
-"marcanoi","marcanoi","Hispaniola"
-"alutaceus","alutaceus","Cuba"
-"vanidicus","vanidicus","Cuba"
-"loysiana","loysiana","Cuba"
-"porcatus","porcatus","Cuba"
-"paternus","paternus","Cuba"
-"angusticeps","angusticeps","Cuba"
-"ahli","ahli","Cuba"
-"sagrei","sagrei","Cuba"
-"ophiolepis","ophiolepis","Cuba"
-"valencienni","valencienni","Jamaica"
-"lineatopus","lineatopus","Jamaica"
-"garmani","garmani","Jamaica"
-"grahami","grahami","Jamaica"
+species,locale
+occultus,Puerto Rico
+luteogularis,Cuba
+equestris,Cuba
+coelestinus,Hispaniola
+aliniger,Hispaniola
+bahorucoensis,Hispaniola
+olssoni,Hispaniola
+insolitus,Hispaniola
+cuvieri,Puerto Rico
+barahonae,Hispaniola
+brevirostris,Hispaniola
+distichus,Hispaniola
+cristatellus,Puerto Rico
+stratulus,Puerto Rico
+krugi,Puerto Rico
+strahmi,Hispaniola
+marcanoi,Hispaniola
+alutaceus,Cuba
+vanidicus,Cuba
+loysiana,Cuba
+porcatus,Cuba
+paternus,Cuba
+angusticeps,Cuba
+ahli,Cuba
+sagrei,Cuba
+ophiolepis,Cuba
+valencienni,Jamaica
+lineatopus,Jamaica
+garmani,Jamaica
+grahami,Jamaica
+sagrei,Jamaica
+distichus,Cat Island
+distichus,Ile de la Tortue
+heterodermus,Mainland

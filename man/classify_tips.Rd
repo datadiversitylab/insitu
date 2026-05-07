@@ -2,10 +2,22 @@
 % Please edit documentation in R/classify_tips.R
 \name{classify_tips}
 \alias{classify_tips}
-\title{Assigns tips as island endemic, non-endemic, or widespread based on locality data}
+\title{Assigns tips as island endemic or non-endemic based on locality data}
 \usage{
-classify_tips()
+classify_tips(occs, islands)
+}
+\arguments{
+\item{occs}{Occurrence data (in a data.frame) that includes information about
+several species and where they occur. This function assumes that there is a column
+called "species" where the species name is written, and a column called "locale"
+where the corresponding locale is written. If one species occupies multiple locales,
+there should be multiple rows for that species in this dataframe.}
+
+\item{islands}{A vector of island names that help classify each tip.}
 }
 \description{
-Assigns tips as island endemic, non-endemic, or widespread based on locality data
+This function classifies species both on the island-level and on
+the archipelago-level. For example, a species that occurs in two islands within
+the same archipelago is not endemic on an island-level (0 in the island column),
+but is endemic on an archipelago-level (1 in the archipelago column).
 }
