@@ -88,4 +88,6 @@ match_island_phylo <- function(phy, locs, exclude = TRUE){
     cli::cli_alert_info("Matching complete! Here are the first 5 locales in your data:")
     print(utils::head(sp_df, n = 5))
   }
+
+  return(results)
 }
