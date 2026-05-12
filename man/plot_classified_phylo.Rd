@@ -4,7 +4,17 @@
 \alias{plot_classified_phylo}
 \title{Dated phylogeny with branches and nodes colored by in-situ vs. colonization classification}
 \usage{
-plot_classified_phylo()
+plot_classified_phylo(phy, events)
+}
+\arguments{
+\item{phy}{The phylogenetic tree associated with your data}
+
+\item{events}{The dataframe returned by \code{map_insitu_events}. If the user
+would like to input a custom dataframe, ensure that it has the following
+columns: node (internal node numbers associated with the given phylogenetic
+tree), island (the name of the island associated with the ancestral state
+for that node), and in_situ (logical - whether in situ speciation occurred
+at the given node).}
 }
 \description{
 Dated phylogeny with branches and nodes colored by in-situ vs. colonization classification
