@@ -13,13 +13,16 @@
 #' subsequent column is titled with a species name. Each species column should
 #' include either a 0 (absence) or a 1 (presence), signifying whether that
 #' species occurs on the island in a given row.
+#' @param threshold The threshold of probability at which it is reasonable to
+#' infer that a given ancestral node occurred on the same island as a given
+#' set of tips. Default: 0.5
 #' @return A dataframe including node numbers, islands associated with those
 #' nodes, and whether an in situ speciation event was likely at that node/island
 #' combination.
 #'
 #' @export
 
-map_insitu_events <- function(recons, phy, PAM){
+map_insitu_events <- function(recons, phy, PAM, threshold = 0.5){
   # Initialize result dataframe
   results <- data.frame()
 
@@ -60,16 +63,32 @@ map_insitu_events <- function(recons, phy, PAM){
     # Infer in situ speciation event only if exactly one common island
     if(length(common_islands) == 1){
       island <- common_islands
-      # Probability ancestor present on the same island
-      anc_prob <- recons[[island]]$lik.anc[node - n_species, 2]
 
-      # Confirm ancestor present with high likelihood
-      in_situ <- anc_prob >= 0.5
+      # IF USED run_geo_asr
+      if(typeof(recons[[1]]) == "list"){
+        # Probability ancestor present on the same island
+        anc_prob <- recons[[island]]$lik.anc[node - n_species, 2]
 
-      results <- rbind(results, data.frame(node = node,
-                                           island = island,
-                                           ancestor_presence_prob = anc_prob,
-                                           in_situ = in_situ))
+        # Confirm ancestor present with high likelihood
+        in_situ <- anc_prob >= threshold
+
+        results <- rbind(results, data.frame(node = node,
+                                             island = island,
+                                             ancestor_presence_prob = anc_prob,
+                                             in_situ = in_situ))
+      } else {
+        # IF USED simmap_insitu
+        # Probability ancestor present on the same island
+        anc_prob <- recons[[island]][node - n_species, 2]
+
+        # Confirm ancestor present with high likelihood
+        in_situ <- anc_prob >= 0.5
+
+        results <- rbind(results, data.frame(node = node,
+                                             island = island,
+                                             ancestor_presence_prob = anc_prob,
+                                             in_situ = in_situ))
+      }
     }
     # else ambiguous (multiple or zero islands), do not infer
   } # End for

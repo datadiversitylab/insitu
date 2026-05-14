@@ -8,11 +8,14 @@
 #' subsequent column is titled with a species name. Each species column should
 #' include either a 0 (absence) or a 1 (presence), signifying whether that
 #' species occurs on the island in a given row.
+#' @param model The transition model to use in `phytools::make.simmap`. See
+#' documentation for `ape::ace` for more information. Default: ER
+#' @param ... Further arguments that may be passed to `ape::ace`
 #' @return A list of island-specific ancestral state reconstructions
 #'
 #' @export
 
-run_geo_asr <- function(phy, PAM){
+run_geo_asr <- function(phy, PAM, model = "ER", ...){
   # First, run an ancestral state reconstruction per island separately
   # Get the list of islands
   islands <- PAM$locale
@@ -29,7 +32,8 @@ run_geo_asr <- function(phy, PAM){
     anc_recons[[islands[i]]] <- ape::ace(x = island_states,
                                          phy = phy,
                                          type = "discrete",
-                                         model = "ER")
+                                         model = model,
+                                         ...)
   }
 
   # Return the list

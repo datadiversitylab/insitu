@@ -4,7 +4,7 @@
 \alias{map_insitu_events}
 \title{Applies decision rules to reconstructed nodes to classify each speciation event as in-situ, colonization, or ambiguous}
 \usage{
-map_insitu_events(recons, phy, PAM)
+map_insitu_events(recons, phy, PAM, threshold = 0.5)
 }
 \arguments{
 \item{recons}{A list of ancestral state reconstructions returned by \code{run_geo_asr}.
@@ -22,6 +22,10 @@ column titled "locale" with the name of an island in each row, and each
 subsequent column is titled with a species name. Each species column should
 include either a 0 (absence) or a 1 (presence), signifying whether that
 species occurs on the island in a given row.}
+
+\item{threshold}{The threshold of probability at which it is reasonable to
+infer that a given ancestral node occurred on the same island as a given
+set of tips. Default: 0.5}
 }
 \value{
 A dataframe including node numbers, islands associated with those

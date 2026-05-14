@@ -17,8 +17,15 @@ plot_classified_phylo <- function(phy, events){
   # Find the nodes at which in situ speciation occurred
   in_situ_nodes <- events$node[events$in_situ == TRUE]
 
+  # Make sure that we only plot nodes that are parents of at least one
+  #  extant species
+  parent_nodes <- phy$edge[phy$edge[,2] <= ape::Ntip(phy), 1]
+
+  # Filter in_situ_nodes by parent_nodes
+  in_situ_nodes <- in_situ_nodes[in_situ_nodes %in% parent_nodes]
+
   # Get the island names for the nodes at which in situ speciation occurred
-  node_labels <- events$island[events$in_situ == TRUE]
+  node_labels <- events$island[events$node %in% in_situ_nodes]
 
   # Add points to the nodes where in situ speciation occurred
   ape::nodelabels(node = in_situ_nodes,

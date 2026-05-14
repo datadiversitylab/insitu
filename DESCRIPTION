@@ -11,6 +11,7 @@ Imports:
     cli,
     dplyr,
     geiger,
+    phytools,
     reshape2,
     rlang,
     stringr,

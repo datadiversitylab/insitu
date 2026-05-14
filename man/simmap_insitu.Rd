@@ -4,7 +4,27 @@
 \alias{simmap_insitu}
 \title{Uses stochastic character mapping to propagate ASR uncertainty through speciation classifications. Posterior distribution of in-situ event counts}
 \usage{
-simmap_insitu()
+simmap_insitu(phy, PAM, model = "ER", nsim = 10)
+}
+\arguments{
+\item{phy}{The phylogenetic tree associated with your data}
+
+\item{PAM}{A presence-absence matrix reflecting where each species of
+interest is located. The \code{match_island_phylo} function will create this PAM,
+but if the user would prefer to input a custom PAM, make sure that it has a
+column titled "locale" with the name of an island in each row, and each
+subsequent column is titled with a species name. Each species column should
+include either a 0 (absence) or a 1 (presence), signifying whether that
+species occurs on the island in a given row.}
+
+\item{model}{The transition model to use in \code{phytools::make.simmap}. See
+documentation for \code{ape::ace} for more information. Default: ER}
+
+\item{nsim}{The number of simulations to use in \code{phytools::make.simmap}
+Default: 10}
+}
+\value{
+A list of island-specific ancestral state reconstructions
 }
 \description{
 Uses stochastic character mapping to propagate ASR uncertainty through speciation classifications. Posterior distribution of in-situ event counts

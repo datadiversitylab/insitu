@@ -4,7 +4,7 @@
 \alias{run_geo_asr}
 \title{Runs geographic state ASR (discrete: island; mainland?)}
 \usage{
-run_geo_asr(phy, PAM)
+run_geo_asr(phy, PAM, model = "ER", ...)
 }
 \arguments{
 \item{phy}{The phylogenetic tree associated with your data}
@@ -16,6 +16,11 @@ column titled "locale" with the name of an island in each row, and each
 subsequent column is titled with a species name. Each species column should
 include either a 0 (absence) or a 1 (presence), signifying whether that
 species occurs on the island in a given row.}
+
+\item{model}{The transition model to use in \code{phytools::make.simmap}. See
+documentation for \code{ape::ace} for more information. Default: ER}
+
+\item{...}{Further arguments that may be passed to \code{ape::ace}}
 }
 \value{
 A list of island-specific ancestral state reconstructions
