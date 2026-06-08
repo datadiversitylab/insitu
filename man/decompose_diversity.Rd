@@ -2,10 +2,38 @@
 % Please edit documentation in R/decompose_diversity.R
 \name{decompose_diversity}
 \alias{decompose_diversity}
-\title{Partitions island species richness into colonization-derived vs. in-situ-derived richness per island}
+\title{Partition island species richness into in-situ, import, and export components}
 \usage{
-decompose_diversity()
+decompose_diversity(phy, events, PAM)
+}
+\arguments{
+\item{phy}{The matched phylogenetic tree.}
+
+\item{events}{The data frame returned by \code{map_insitu_events}, with
+columns \code{node}, \code{island}, \code{in_situ}, \code{export}, and
+\code{import}.}
+
+\item{PAM}{The presence-absence matrix with islands as rows and species as
+columns, with a \code{locale} column for island names.}
+}
+\value{
+A data frame with one row per island and columns:
+\describe{
+\item{\code{island}}{Island name.}
+\item{\code{n_species}}{Total extant species on the island.}
+\item{\code{n_insitu}}{Species derived from in-situ speciation.}
+\item{\code{n_import}}{Import events into this island.}
+\item{\code{n_export}}{Export events out of this island.}
+\item{\code{prop_insitu}}{Proportion of species from in-situ speciation.}
+}
 }
 \description{
-Partitions island species richness into colonization-derived vs. in-situ-derived richness per island
+For each island, counts in-situ speciation, import, and export events.
+In-situ speciation events are identified as cases in which an ancestral
+node is assigned to the same region as its descendant. Import events are
+cases where a descendant node is assigned to a different region than its
+ancestor. Export events are the reverse: the ancestral node is assigned
+to the focal island while its descendant is assigned to a different region.
+Both ancestor and descendant must be assigned to a region for any event
+to be detected.
 }

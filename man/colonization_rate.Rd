@@ -2,10 +2,29 @@
 % Please edit documentation in R/colonization_rate.R
 \name{colonization_rate}
 \alias{colonization_rate}
-\title{Estimates the rate of successful colonization events per lineage per unit time}
+\title{Estimates colonization rates events per lineage per unit time}
 \usage{
-colonization_rate()
+colonization_rate(phy, events)
+}
+\arguments{
+\item{phy}{The marched phylogenetic tree.}
+
+\item{events}{The data frame returned by \code{map_insitu_events}.}
+}
+\value{
+A data frame with one row per tip and columns:
+\describe{
+\item{\code{species}}{Tip label.}
+\item{\code{n_import}}{Number of import events on the path from root to tip.}
+\item{\code{n_export}}{Number of export events on the path from root to tip.}
+\item{\code{n_colonization}}{Number of dispersal events}
+\item{\code{path_length}}{Total branch length from root to tip.}
+\item{\code{colonization_rate}}{Colonization events per unit time.}
+}
 }
 \description{
-Estimates the rate of successful colonization events per lineage per unit time
+For each tip, counts the number of dispersal events on the path from the
+root to the tip and divides by the total branch length of that path. Each
+dispersal event is recorded as both an import and an export, so the total
+transitions divided by two to avoid double-counting.
 }

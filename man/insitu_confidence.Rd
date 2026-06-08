@@ -2,10 +2,31 @@
 % Please edit documentation in R/insitu_confidence.R
 \name{insitu_confidence}
 \alias{insitu_confidence}
-\title{Computes per-node support for in-situ classification}
+\title{Computes per-node support for in-situ event classification}
 \usage{
-insitu_confidence()
+insitu_confidence(recons, events)
+}
+\arguments{
+\item{recons}{A list of ancestral state reconstructions returned by
+\code{run_geo_asr}.}
+
+\item{events}{The data frame returned by \code{map_insitu_events}.}
+}
+\value{
+A data frame with one row per node and columns:
+\describe{
+\item{\code{node}}{Internal node number.}
+\item{\code{island}}{Island associated with the node.}
+\item{\code{ancestor_presence_prob}}{Posterior probability of the
+ancestor being present on the island.}
+\item{\code{in_situ}}{Whether in-situ speciation was inferred.}
+\item{\code{support}}{Qualitative support level: \code{"high"}
+(prob >= 0.75), \code{"moderate"} (prob >= 0.5), or
+\code{"low"} (prob < 0.5).}
+}
 }
 \description{
-Computes per-node support for in-situ classification
+For each internal node, smmarizes the probability of in-situ
+speciation across all islands by extracting the ancestor presence
+probability directly from reconstructions.
 }

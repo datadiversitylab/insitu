@@ -1,0 +1,102 @@
+---
+title: "Getting started with insitu"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with insitu}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+```
+
+## Data preparation
+
+```{r data}
+library(insitu)
+
+tree    <- ape::read.tree(system.file("extdata/Patton_etal_trimmed.tree",
+                                       package = "insitu"))
+dat     <- read.csv(system.file("extdata/anolis_dat.csv",
+                                 package = "insitu"))
+matched <- match_island_phylo(phy = tree, locs = dat)
+```
+
+## Ancestral state reconstruction
+
+```{r asr}
+asr_insitu <- run_geo_asr(phy = matched$phy, PAM = matched$PAM)
+```
+
+## Event classification
+
+```{r events}
+map_events <- map_insitu_events(recons    = asr_insitu,
+                                phy       = matched$phy,
+                                PAM       = matched$PAM,
+                                threshold = 0.5)
+head(map_events)
+```
+
+## Visualization
+
+```{r plot_phylo, fig.width = 8, fig.height = 6}
+plot_classified_phylo(phy = matched$phy, events = map_events)
+```
+
+## Diversity decomposition
+
+```{r decompose}
+div <- decompose_diversity(phy    = matched$phy,
+                           events = map_events,
+                           PAM    = matched$PAM)
+div
+```
+
+```{r plot_div, fig.width = 7, fig.height = 5}
+plot_diversity_decomposition(div)
+compare_islands(div)
+```
+
+## Rates
+
+```{r rates}
+colonization_rate(phy = matched$phy, events = map_events)
+insitu_speciation_rate(phy = matched$phy, events = map_events)
+```
+
+## Index
+
+```{r index}
+insitu_speciation_index(phy = matched$phy, events = map_events)
+```
+
+## Node support
+
+```{r confidence}
+insitu_confidence(recons = asr_insitu, events = map_events)
+```
+
+## Adaptive radiation bursts
+
+```{r bursts, fig.width = 8, fig.height = 6}
+detect_radiation_bursts(phy         = matched$phy,
+                        events      = map_events,
+                        time_window = 5,
+                        min_events  = 2,
+                        plot        = TRUE)
+```
+
+## Non-ASR-based
+
+```{r bursts, fig.width = 8, fig.height = 6}
+nc <- identify_island_nodes(phy = matched$phy, PAM = matched$PAM)
+plot_island_nodes(phy = matched$phy, node_class = nc, PAM = matched$PAM)
+```
+
+
+

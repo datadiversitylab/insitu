@@ -2,10 +2,48 @@
 % Please edit documentation in R/detect_radiation_bursts.R
 \name{detect_radiation_bursts}
 \alias{detect_radiation_bursts}
-\title{Identifies nodes where multiple sequential in-situ speciation events occur within a defined time window. Useful for adaptive radiations}
+\title{Identifies nodes where multiple sequential in-situ speciation events occur
+within a defined time window}
 \usage{
-detect_radiation_bursts()
+detect_radiation_bursts(
+  phy,
+  events,
+  time_window = 5,
+  min_events = 3,
+  plot = TRUE
+)
+}
+\arguments{
+\item{phy}{The matched phylogenetic tree.}
+
+\item{events}{The data frame returned by \code{map_insitu_events}.}
+
+\item{time_window}{The maximum time (Ma) span within which in-situ events must
+occur to be considered a burst.}
+
+\item{min_events}{The minimum number of in-situ speciation events within
+the time window to qualify as a burst.}
+
+\item{plot}{Logical. Whether to plot the phylogeny with burst nodes
+highlighted. Default: \code{TRUE}.}
+}
+\value{
+A data frame with one row per detected burst and columns:
+\describe{
+\item{\code{node}}{Root node of the burst clade (MRCA).}
+\item{\code{island}}{Island on which the burst occurred.}
+\item{\code{n_insitu_events}}{Number of in-situ speciation events within
+the time window.}
+\item{\code{n_species}}{Total extant species descending from the burst clade.}
+\item{\code{burst_timeframe}}{Time elapsed from the MRCA to the youngest
+in-situ event in the burst.}
+\item{\code{time_window}}{The time window used.}
+}
 }
 \description{
-Identifies nodes where multiple sequential in-situ speciation events occur within a defined time window. Useful for adaptive radiations
+For each internal node marked as in-situ, counts how many additional in-situ
+speciation events occur among its descendants within a given time window.
+Each event represents a speciation that kept the lineage on the same island.
+Clades exceeding the minimum event count are flagged as candidate adaptive
+radiations.
 }

@@ -2,10 +2,26 @@
 % Please edit documentation in R/insitu_speciation_rate.R
 \name{insitu_speciation_rate}
 \alias{insitu_speciation_rate}
-\title{Estimates per-lineage in-situ speciation rates from the phylogeny}
+\title{Estimates the rate of in-situ speciation events per lineage per unit time}
 \usage{
-insitu_speciation_rate()
+insitu_speciation_rate(phy, events)
+}
+\arguments{
+\item{phy}{The matched phylogenetic tree.}
+
+\item{events}{The data frame returned by \code{map_insitu_events}.}
+}
+\value{
+A data frame with one row per tip and columns:
+\describe{
+\item{\code{species}}{Tip label.}
+\item{\code{n_insitu}}{Number of in-situ speciation events on the path from root to tip.}
+\item{\code{path_length}}{Total branch length from root to tip.}
+\item{\code{insitu_rate}}{In-situ speciation events per unit time.}
+}
 }
 \description{
-Estimates per-lineage in-situ speciation rates from the phylogeny
+For each tip, counts the number of in-situ speciation events on the path
+from the root to the tip and divides that by the total branch length of the
+path.
 }

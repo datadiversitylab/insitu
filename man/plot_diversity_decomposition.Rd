@@ -2,10 +2,18 @@
 % Please edit documentation in R/plot_diversity_decomposition.R
 \name{plot_diversity_decomposition}
 \alias{plot_diversity_decomposition}
-\title{Stacked bar or area chart of in-situ vs. colonization diversity per island (maybe through time?)}
+\title{Stacked bar chart of in-situ, import, and export diversity per island}
 \usage{
-plot_diversity_decomposition()
+plot_diversity_decomposition(div)
+}
+\arguments{
+\item{div}{A data frame returned by \code{decompose_diversity}.}
+}
+\value{
+Invisibly returns the matrix used for plotting.
 }
 \description{
-Stacked bar or area chart of in-situ vs. colonization diversity per island (maybe through time?)
+For each island, plots a stacked bar showing the number of in-situ
+speciation, import, and export events as returned by
+\code{decompose_diversity}.
 }
