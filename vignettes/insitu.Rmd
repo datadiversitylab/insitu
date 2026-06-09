@@ -78,7 +78,7 @@ insitu_speciation_index(phy = matched$phy, events = map_events)
 ## Node support
 
 ```{r confidence}
-insitu_confidence(recons = asr_insitu, events = map_events)
+insitu_confidence(recons = asr_insitu)
 ```
 
 ## Adaptive radiation bursts

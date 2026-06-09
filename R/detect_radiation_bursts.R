@@ -31,6 +31,7 @@
 detect_radiation_bursts <- function(phy, events, time_window = 5,
                                     min_events = 3, plot = TRUE) {
   insitu_nodes <- events$node[events$in_situ == TRUE]
+  insitu_nodes <- na.omit(insitu_nodes)
   node_ages    <- ape::node.depth.edgelength(phy)
   n_tips       <- ape::Ntip(phy)
   results      <- data.frame()

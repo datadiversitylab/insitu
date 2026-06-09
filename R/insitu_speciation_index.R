@@ -19,6 +19,7 @@
 #' @export
 
 insitu_speciation_index <- function(phy, events){
+  events <- events[events$island != "TRANSITION",]
   islands <- unique(events$island[!is.na(events$island)])
   n_tips  <- ape::Ntip(phy)
 
