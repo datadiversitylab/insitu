@@ -34,10 +34,10 @@ decompose_diversity <- function(phy, events, PAM) {
     queue <- nd
     while (length(queue) > 0) {
       children <- phy$edge[phy$edge[, 1] == queue[1], 2]
-      tips     <- children[children <= ape::Ntip(phy)]
+      tips <- children[children <= ape::Ntip(phy)]
       internal <- children[children >  ape::Ntip(phy)]
-      desc     <- c(desc, tips)
-      queue    <- c(queue[-1], internal)
+      desc <- c(desc, tips)
+      queue <- c(queue[-1], internal)
     }
     phy$tip.label[desc]
   }
@@ -45,8 +45,8 @@ decompose_diversity <- function(phy, events, PAM) {
   islands <- unique(PAM$locale)
 
   out <- lapply(islands, function(isl) {
-    isl_tips  <- species_cols[sapply(species_cols, function(sp) PAM[[sp]][PAM$locale == isl] == 1)]
-    isl_tips  <- isl_tips[isl_tips %in% phy$tip.label]
+    isl_tips <- species_cols[sapply(species_cols, function(sp) PAM[[sp]][PAM$locale == isl] == 1)]
+    isl_tips <- isl_tips[isl_tips %in% phy$tip.label]
     n_species <- length(isl_tips)
 
     if (n_species == 0L) {
@@ -57,8 +57,8 @@ decompose_diversity <- function(phy, events, PAM) {
 
     # n_insitu: unique tips descending from in-situ nodes on this island
     insitu_nodes <- events$node[events$island == isl & events$in_situ == TRUE]
-    insitu_tips  <- unique(unlist(lapply(insitu_nodes, tips_from_node)))
-    n_insitu     <- length(intersect(insitu_tips, isl_tips))
+    insitu_tips <- unique(unlist(lapply(insitu_nodes, tips_from_node)))
+    n_insitu <- length(intersect(insitu_tips, isl_tips))
 
     # n_import: events where this island is the destination
     n_import <- sum(events$import == isl, na.rm = TRUE)
@@ -67,11 +67,11 @@ decompose_diversity <- function(phy, events, PAM) {
     n_export <- sum(events$export == isl, na.rm = TRUE)
 
     data.frame(
-      island      = isl,
-      n_species   = n_species,
-      n_insitu    = n_insitu,
-      n_import    = n_import,
-      n_export    = n_export,
+      island = isl,
+      n_species = n_species,
+      n_insitu = n_insitu,
+      n_import = n_import,
+      n_export = n_export,
       prop_insitu = n_insitu / n_species,
       stringsAsFactors = FALSE
     )

@@ -36,13 +36,13 @@ age_correct_events <- function(events, phy, island_ages,
   if (!is.numeric(island_ages) || is.null(names(island_ages)))
     stop("'island_ages' must be a named numeric vector.")
 
-  n_tips    <- ape::Ntip(phy)
-  depths    <- ape::node.depth.edgelength(phy)
-  root_age  <- max(depths[seq_len(n_tips)])
+  n_tips <- ape::Ntip(phy)
+  depths <- ape::node.depth.edgelength(phy)
+  root_age <- max(depths[seq_len(n_tips)])
   node_ages <- root_age - depths
 
-  events$node_age      <- node_ages[events$node]
-  events$island_age    <- island_ages[events$island]
+  events$node_age <- node_ages[events$node]
+  events$island_age <- island_ages[events$island]
   events$predates_island <- !is.na(events$island_age) &
     events$node_age > events$island_age
 
@@ -98,11 +98,11 @@ insitu_rate_by_island_age <- function(phy, events, island_ages) {
     n_insitu  <- sum(valid_events$island == isl, na.rm = TRUE)
     isl_age   <- island_ages[isl]
     data.frame(
-      island                 = isl,
-      n_insitu               = n_insitu,
-      island_age             = isl_age,
-      insitu_rate_corrected  = if (isl_age > 0) n_insitu / isl_age else NA,
-      stringsAsFactors       = FALSE
+      island = isl,
+      n_insitu = n_insitu,
+      island_age = isl_age,
+      insitu_rate_corrected = if (isl_age > 0) n_insitu / isl_age else NA,
+      stringsAsFactors = FALSE
     )
   })
 

@@ -19,20 +19,20 @@
 #' @export
 compare_islands <- function(div) {
   # counts comparison across islands
-  counts_mat   <- as.matrix(div[, c("n_insitu", "n_import", "n_export")])
+  counts_mat <- as.matrix(div[, c("n_insitu", "n_import", "n_export")])
   rownames(counts_mat) <- div$island
   counts_test  <- chisq.test(counts_mat)
 
   # per-island rates
-  insitu_rate       <- div$n_insitu / div$n_species
+  insitu_rate <- div$n_insitu / div$n_species
   colonization_rate <- ((div$n_import + div$n_export) / 2) / div$n_species
 
-  insitu_rate_test       <- kruskal.test(insitu_rate       ~ div$island)
+  insitu_rate_test <- kruskal.test(insitu_rate       ~ div$island)
   colonization_rate_test <- kruskal.test(colonization_rate ~ div$island)
 
   list(
-    counts_test            = counts_test,
-    insitu_rate_test       = insitu_rate_test,
+    counts_test = counts_test,
+    insitu_rate_test = insitu_rate_test,
     colonization_rate_test = colonization_rate_test
   )
 }

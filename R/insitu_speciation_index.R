@@ -21,7 +21,7 @@
 insitu_speciation_index <- function(phy, events){
   events <- events[events$island != "TRANSITION",]
   islands <- unique(events$island[!is.na(events$island)])
-  n_tips  <- ape::Ntip(phy)
+  n_tips <- ape::Ntip(phy)
 
   out <- lapply(islands, function(isl) {
     # nodes assigned to this island
@@ -35,10 +35,10 @@ insitu_speciation_index <- function(phy, events){
     n_insitu <- sum(events$in_situ[events$island == isl], na.rm = TRUE)
 
     data.frame(
-      island    = isl,
+      island = isl,
       n_insitu  = n_insitu,
       island_bl = island_bl,
-      isci      = if (island_bl > 0) n_insitu / island_bl else NA,
+      isci = if (island_bl > 0) n_insitu / island_bl else NA,
       stringsAsFactors = FALSE
     )
   })

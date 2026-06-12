@@ -64,14 +64,14 @@ identify_island_nodes <- function(phy, PAM) {
       results <- rbind(results, data.frame(
         node   = node,
         status = "between_island",
-        island = NA_character_,
+        island = NA,
         stringsAsFactors = FALSE
       ))
     } else {
       results <- rbind(results, data.frame(
         node   = node,
         status = "ambiguous",
-        island = NA_character_,
+        island = NA,
         stringsAsFactors = FALSE
       ))
     }

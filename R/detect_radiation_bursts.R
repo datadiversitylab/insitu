@@ -32,9 +32,9 @@ detect_radiation_bursts <- function(phy, events, time_window = 5,
                                     min_events = 3, plot = TRUE) {
   insitu_nodes <- events$node[events$in_situ == TRUE]
   insitu_nodes <- na.omit(insitu_nodes)
-  node_ages    <- ape::node.depth.edgelength(phy)
-  n_tips       <- ape::Ntip(phy)
-  results      <- data.frame()
+  node_ages <- ape::node.depth.edgelength(phy)
+  n_tips <- ape::Ntip(phy)
+  results <- data.frame()
 
   for (nd in insitu_nodes) {
     island <- events$island[events$node == nd & events$in_situ == TRUE][1]
@@ -46,29 +46,29 @@ detect_radiation_bursts <- function(phy, events, time_window = 5,
     while (length(queue) > 0) {
       children <- phy$edge[phy$edge[, 1] == queue[1], 2]
       all_desc <- c(all_desc, children)
-      queue    <- c(queue[-1], children[children > n_tips])
+      queue <- c(queue[-1], children[children > n_tips])
     }
 
     # in-situ events among descendant internal nodes within time window
-    desc_internal   <- all_desc[all_desc > n_tips]
-    desc_insitu     <- intersect(desc_internal, insitu_nodes)
-    desc_ages       <- node_ages[desc_insitu]
-    in_window       <- desc_insitu[abs(desc_ages - nd_age) <= time_window]
-    n_events        <- 1L + length(in_window)
+    desc_internal <- all_desc[all_desc > n_tips]
+    desc_insitu <- intersect(desc_internal, insitu_nodes)
+    desc_ages <- node_ages[desc_insitu]
+    in_window <- desc_insitu[abs(desc_ages - nd_age) <= time_window]
+    n_events <- 1L + length(in_window)
 
     if (n_events >= min_events) {
-      n_species       <- sum(all_desc <= n_tips)
-      in_window_ages  <- node_ages[in_window]
+      n_species <- sum(all_desc <= n_tips)
+      in_window_ages <- node_ages[in_window]
       burst_timeframe <- if (length(in_window) > 0)
         max(in_window_ages) - nd_age else 0
 
       results <- rbind(results, data.frame(
-        node            = nd,
-        island          = island,
+        node = nd,
+        island = island,
         n_insitu_events = n_events,
-        n_species       = n_species,
+        n_species = n_species,
         burst_timeframe = burst_timeframe,
-        time_window     = time_window,
+        time_window = time_window,
         stringsAsFactors = FALSE
       ))
     }
@@ -82,7 +82,7 @@ detect_radiation_bursts <- function(phy, events, time_window = 5,
          main = expression(paste("Adaptive radiation bursts")),
          cex  = 0.8)
 
-    burst_nodes   <- results$node
+    burst_nodes <- results$node
     burst_islands <- results$island
 
     ape::nodelabels(node = burst_nodes, pch = 19,

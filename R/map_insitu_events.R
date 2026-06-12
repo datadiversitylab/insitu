@@ -113,16 +113,16 @@ map_insitu_events <- function(recons, phy, PAM, threshold = 0.5){
 
   # For internal nodes
   for (i in seq_len(nrow(phy$edge))) {
-    parent_nd     <- phy$edge[i, 1]
-    child_nd      <- phy$edge[i, 2]
+    parent_nd <- phy$edge[i, 1]
+    child_nd <- phy$edge[i, 2]
     parent_region <- best_region(parent_nd)
     child_region  <- best_region(child_nd)
     if (is.na(parent_region) || is.na(child_region)) next
     if (parent_region == child_region) next
     transitions <- rbind(transitions, data.frame(
-      node             = child_nd,
-      export           = parent_region,
-      import           = child_region,
+      node = child_nd,
+      export = parent_region,
+      import = child_region,
       stringsAsFactors = FALSE
     ))
   }
@@ -138,9 +138,9 @@ map_insitu_events <- function(recons, phy, PAM, threshold = 0.5){
       if (is.na(parent_region)) next
       if (parent_region == tip_island) next
       transitions <- rbind(transitions, data.frame(
-        node             = tip_idx,
-        export           = parent_region,
-        import           = tip_island,
+        node = tip_idx,
+        export = parent_region,
+        import = tip_island,
         stringsAsFactors = FALSE
       ))
     }

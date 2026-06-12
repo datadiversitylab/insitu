@@ -11,7 +11,7 @@
 
 plot_classified_phylo <- function(phy, events){
   islands <- unique(events$island)
-  colors  <- setNames(palette.colors(length(islands), "Okabe-Ito"), islands)
+  colors <- setNames(palette.colors(length(islands), "Okabe-Ito"), islands)
 
   plot(phy,
        main = expression(paste("Island-Level ", italic("in situ"), " Speciation")),
@@ -26,7 +26,7 @@ plot_classified_phylo <- function(phy, events){
   # Add points to the nodes where in situ speciation occurred
   ape::nodelabels(node = in_situ_nodes,
                   pch = 19,
-                  col  = colors[node_labels])
+                  col = colors[node_labels])
 
   # Add island names to the nodes with in situ speciation
   ape::nodelabels(text = node_labels,

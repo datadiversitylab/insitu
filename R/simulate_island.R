@@ -52,25 +52,25 @@ simulate_island <- function(n_tips,
   if (!is.null(seed)) set.seed(seed)
 
   # Simulate a birth-death tree
-  phy <- ape::rphylo(n          = n_tips,
-                     birth      = birth_rate,
-                     death      = death_rate,
-                     fossils    = FALSE)
+  phy <- ape::rphylo(n = n_tips,
+                     birth = birth_rate,
+                     death = death_rate,
+                     fossils = FALSE)
 
   n_species <- ape::Ntip(phy)
 
   # Build transition rate matrix: mainland (1) <-> island (2)
   # States: 1 = mainland, 2 = island
   Q <- matrix(c(-colonization_rate,  colonization_rate,
-                 back_rate,          -back_rate),
+                 back_rate, -back_rate),
               nrow = 2, byrow = TRUE)
 
   # Simulate geographic states along the tree
   # All lineages start on the mainland (state 1)
   tip_states <- ape::rTraitDisc(
     phy,
-    model  = Q,
-    k      = 2,
+    model = Q,
+    k = 2,
     states = c("mainland", "island"),
     root.value = 1
   )
@@ -78,10 +78,10 @@ simulate_island <- function(n_tips,
   # Apply island extinction: remove a fraction of island tips at random
   island_tips <- names(tip_states)[tip_states == "island"]
   if (island_extinction_fraction > 0 && length(island_tips) > 0) {
-    n_extinct    <- round(length(island_tips) * island_extinction_fraction)
+    n_extinct <- round(length(island_tips) * island_extinction_fraction)
     extinct_tips <- sample(island_tips, n_extinct)
-    phy          <- ape::drop.tip(phy, extinct_tips)
-    tip_states   <- tip_states[phy$tip.label]
+    phy <- ape::drop.tip(phy, extinct_tips)
+    tip_states <- tip_states[phy$tip.label]
   }
 
   n_species <- ape::Ntip(phy)
@@ -103,7 +103,7 @@ simulate_island <- function(n_tips,
   # Build PAM
   all_islands <- unique(c(tip_islands, "Mainland"))
   all_islands <- all_islands[all_islands != "Mainland"]
-  locales     <- c(all_islands, "Mainland")
+  locales <- c(all_islands, "Mainland")
 
   PAM <- data.frame(locale = locales, stringsAsFactors = FALSE)
   for (sp in phy$tip.label) {
@@ -119,10 +119,8 @@ simulate_island <- function(n_tips,
   }
 
   # Reconstruct true in-situ events from the simulated states
-  # A node is in-situ if both children subtrees are on the same island
-  # (same logic as map_insitu_events but using known tip states as ground truth)
   true_events <- data.frame()
-  islands     <- all_islands
+  islands <- all_islands
 
   for (node in (n_species + 1):(n_species + phy$Nnode)) {
     children <- phy$edge[phy$edge[, 1] == node, 2]
@@ -140,18 +138,18 @@ simulate_island <- function(n_tips,
       ape::extract.clade(phy, children[2])$tip.label
     }
 
-    desc1_ranges   <- sapply(islands, function(isl)
+    desc1_ranges <- sapply(islands, function(isl)
       any(tip_islands[tips_desc1] == isl, na.rm = TRUE))
-    desc2_ranges   <- sapply(islands, function(isl)
+    desc2_ranges <- sapply(islands, function(isl)
       any(tip_islands[tips_desc2] == isl, na.rm = TRUE))
     common_islands <- islands[desc1_ranges & desc2_ranges]
 
     if (length(common_islands) == 1) {
       true_events <- rbind(true_events, data.frame(
-        node                   = node,
-        island                 = common_islands,
-        in_situ                = TRUE,
-        stringsAsFactors       = FALSE
+        node = node,
+        island = common_islands,
+        in_situ = TRUE,
+        stringsAsFactors = FALSE
       ))
     }
   }

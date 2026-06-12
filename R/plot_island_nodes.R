@@ -22,8 +22,8 @@ plot_island_nodes <- function(phy, node_class, PAM) {
 
   legend("bottomleft",
          legend = c(islands, "between-island"),
-         pch    = 19,
-         col    = c(colors, "grey60"),
-         bty    = "n",
-         cex    = 0.7)
+         pch = 19,
+         col = c(colors, "grey60"),
+         bty = "n",
+         cex = 0.7)
 }

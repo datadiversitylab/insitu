@@ -26,5 +26,6 @@ A data frame with one row per tip and columns:
 For each tip, counts the number of dispersal events on the path from the
 root to the tip and divides by the total branch length of that path. Each
 dispersal event is recorded as both an import and an export, so the total
-transitions divided by two to avoid double-counting.
+transitions divided by two to avoid double-counting. Accounts for incomplete
+sampling fraction when available.
 }

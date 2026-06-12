@@ -19,13 +19,13 @@ plot_diversity_decomposition <- function(div) {
   colors <- c(in_situ = "#E69F00", import = "#56B4E9", export = "#009E73")
 
   barplot(mat,
-          col     = colors,
+          col = colors,
           border  = NA,
-          legend  = rownames(mat),
+          legend = rownames(mat),
           args.legend = list(bty = "n", cex = 0.8),
-          ylab    = "Number of events",
-          las     = 2,
-          main    = "Diversity decomposition per island")
+          ylab = "Number of events",
+          las = 2,
+          main = "Diversity decomposition per island")
 
   invisible(mat)
 }

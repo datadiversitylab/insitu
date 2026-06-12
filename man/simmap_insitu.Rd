@@ -27,5 +27,7 @@ Default: 10}
 A list of island-specific ancestral state reconstructions
 }
 \description{
-Uses stochastic character mapping to propagate ASR uncertainty through speciation classifications. Posterior distribution of in-situ event counts
+When multiple trees are provided, the function propagates ASR uncertainty
+from the stochastic mapping itself, and phylogenetic uncertainty from
+the distribution of trees.
 }

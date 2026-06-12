@@ -41,11 +41,11 @@ simmap_insitu <- function(phy, PAM, model = "ER", nsim = 10){
 
       ace_mat <- summary(
         phytools::make.simmap(
-          tree    = tree,
-          x       = island_states,
-          model   = model,
-          nsim    = nsim,
-          Q       = "mcmc",
+          tree = tree,
+          x = island_states,
+          model = model,
+          nsim = nsim,
+          Q = "mcmc",
           message = FALSE
         )
       )$ace

@@ -7,7 +7,7 @@
 insitu_speciation_rate(phy, events)
 }
 \arguments{
-\item{phy}{The matched phylogenetic tree.}
+\item{phy}{The matched phylogenetic tree prepared with \code{\link{prep_phylo}}}
 
 \item{events}{The data frame returned by \code{map_insitu_events}.}
 }
@@ -23,5 +23,9 @@ A data frame with one row per tip and columns:
 \description{
 For each tip, counts the number of in-situ speciation events on the path
 from the root to the tip and divides that by the total branch length of the
-path.
+path. When the tree was prepared with \code{\link{prep_phylo}} and a
+\code{sampling_fraction} less than 1 was set, branch lengths are scaled
+upward by dividing by the sampling fraction before computing rates.
+This approach corrects for the fact that incomplete sampling shortens
+the total branch length of the observed tree relative to the true underlying tree.
 }

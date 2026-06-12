@@ -13,7 +13,7 @@ need to, make sure that the list is composed of \code{ape::ace} objects, each
 named after a locality. Refer to \code{run_geo_asr} for more information about
 how the original function estimates ancestral states.}
 
-\item{phy}{The phylogenetic tree associated with your data.}
+\item{phy}{The phylogenetic tree associated with your data}
 
 \item{PAM}{A presence-absence matrix reflecting where each species of
 interest is located. The \code{match_island_phylo} function will create this PAM,
@@ -25,13 +25,12 @@ species occurs on the island in a given row.}
 
 \item{threshold}{The threshold of probability at which it is reasonable to
 infer that a given ancestral node occurred on the same island as a given
-set of tips. Default: 0.5.}
+set of tips. Default: 0.5}
 }
 \value{
-A data frame including node numbers, islands associated with those
-nodes, whether an in-situ speciation event was likely at that node/island
-combination, and for transitions, the source island (export) and
-destination island (import).
+A dataframe including node numbers, islands associated with those
+nodes, and whether an in situ speciation event was likely at that node/island
+combination.
 }
 \description{
 Applies decision rules to reconstructed nodes to classify each speciation event as in-situ, colonization, or ambiguous

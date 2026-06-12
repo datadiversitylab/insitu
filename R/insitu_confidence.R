@@ -26,9 +26,9 @@ insitu_confidence <- function(recons) {
       recons[[island]]
     }
     results <- rbind(results, data.frame(
-      node             = as.integer(rownames(lik)),
-      island           = island,
-      prob             = lik[, 2],
+      node = as.integer(rownames(lik)),
+      island = island,
+      prob = lik[, 2],
       stringsAsFactors = FALSE
     ))
   }
@@ -37,7 +37,7 @@ insitu_confidence <- function(recons) {
     results$prob,
     breaks = c(-Inf, 0.5, 0.75, Inf),
     labels = c("low", "moderate", "high"),
-    right  = FALSE
+    right = FALSE
   )
 
   results
