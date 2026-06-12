@@ -98,5 +98,17 @@ nc <- identify_island_nodes(phy = matched$phy, PAM = matched$PAM)
 plot_island_nodes(phy = matched$phy, node_class = nc, PAM = matched$PAM)
 ```
 
+## SIMMAP
+
+```{r}
+#phy
+simmap_insitu(phy = matched$phy, PAM = matched$PAM, model = "ER", nsim = 10)
+
+#multiphylo
+mp <- list(matched$phy, matched$phy)
+class(mp) <- "multiPhylo"
+simmap_insitu(phy = matched$phy, PAM = matched$PAM, model = "ER", nsim = 10)
+```
+
 
 
