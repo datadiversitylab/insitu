@@ -82,7 +82,7 @@ map_insitu_events <- function(recons, phy, PAM, threshold = 0.5){
         anc_prob <- recons[[island]][node - n_species, 2]
 
         # Confirm ancestor present with high likelihood
-        in_situ <- anc_prob >= 0.5
+        in_situ <- anc_prob >= threshold
 
         results <- rbind(results, data.frame(node = node,
                                              island = island,

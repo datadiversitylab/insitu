@@ -24,8 +24,13 @@
 #' @param n_islands Number of islands to simulate. Default: \code{1}.
 #' @param threshold ASR probability threshold passed to
 #'   \code{map_insitu_events}. Default: \code{0.5}.
-#' @param model Transition model passed to \code{run_geo_asr}. Default:
-#'   \code{"ER"}.
+#' @param model Transition model passed to \code{run_geo_asr} or
+#'   \code{simmap_insitu}. Default: \code{"ER"}.
+#' @param use_simmap Logical. If \code{TRUE}, uses \code{simmap_insitu}
+#'   instead of \code{run_geo_asr} to propagate ASR uncertainty through
+#'   the power analysis. Default: \code{FALSE}.
+#' @param nsim Number of stochastic maps per replicate when
+#'   \code{use_simmap = TRUE}. Default: \code{10}.
 #'
 #' @return A data frame with one row per simulation replicate and columns:
 #'   \describe{
@@ -51,7 +56,9 @@ insitu_power <- function(n_sim = 100,
                           island_extinction_fraction = 0,
                           n_islands = 1,
                           threshold = 0.5,
-                          model = "ER") {
+                          model = "ER",
+                          use_simmap = FALSE,
+                          nsim = 10) {
 
   out <- lapply(seq_len(n_sim), function(s) {
     # Simulate
@@ -78,7 +85,12 @@ insitu_power <- function(n_sim = 100,
 
     # Run pipeline
     recons <- tryCatch(
-      run_geo_asr(phy = sim$phy, PAM = sim$PAM, model = model),
+      if (use_simmap) {
+        simmap_insitu(trees = sim$phy, PAM = sim$PAM,
+                      model = model, nsim = nsim)
+      } else {
+        run_geo_asr(phy = sim$phy, PAM = sim$PAM, model = model)
+      },
       error = function(e) NULL
     )
     if (is.null(recons)) return(NULL)
