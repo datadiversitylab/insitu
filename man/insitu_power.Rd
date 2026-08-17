@@ -13,7 +13,9 @@ insitu_power(
   island_extinction_fraction = 0,
   n_islands = 1,
   threshold = 0.5,
-  model = "ER"
+  model = "ER",
+  use_simmap = FALSE,
+  nsim = 10
 )
 }
 \arguments{
@@ -36,8 +38,15 @@ simulating extinction. Default: \code{0}.}
 \item{threshold}{ASR probability threshold passed to
 \code{map_insitu_events}. Default: \code{0.5}.}
 
-\item{model}{Transition model passed to \code{run_geo_asr}. Default:
-\code{"ER"}.}
+\item{model}{Transition model passed to \code{run_geo_asr} or
+\code{simmap_insitu}. Default: \code{"ER"}.}
+
+\item{use_simmap}{Logical. If \code{TRUE}, uses \code{simmap_insitu}
+instead of \code{run_geo_asr} to propagate ASR uncertainty through
+the power analysis. Default: \code{FALSE}.}
+
+\item{nsim}{Number of stochastic maps per replicate when
+\code{use_simmap = TRUE}. Default: \code{10}.}
 }
 \value{
 A data frame with one row per simulation replicate and columns:

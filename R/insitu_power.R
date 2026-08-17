@@ -86,7 +86,7 @@ insitu_power <- function(n_sim = 100,
     # Run pipeline
     recons <- tryCatch(
       if (use_simmap) {
-        simmap_insitu(trees = sim$phy, PAM = sim$PAM,
+        simmap_insitu(phy = sim$phy, PAM = sim$PAM,
                       model = model, nsim = nsim)
       } else {
         run_geo_asr(phy = sim$phy, PAM = sim$PAM, model = model)

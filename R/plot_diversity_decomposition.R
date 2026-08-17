@@ -18,7 +18,7 @@ plot_diversity_decomposition <- function(div) {
 
   colors <- c(in_situ = "#E69F00", import = "#56B4E9", export = "#009E73")
 
-  barplot(mat,
+  graphics::barplot(mat,
           col = colors,
           border  = NA,
           legend = rownames(mat),

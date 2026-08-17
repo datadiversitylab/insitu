@@ -31,7 +31,7 @@
 detect_radiation_bursts <- function(phy, events, time_window = 5,
                                     min_events = 3, plot = TRUE) {
   insitu_nodes <- events$node[events$in_situ == TRUE]
-  insitu_nodes <- na.omit(insitu_nodes)
+  insitu_nodes <- stats::na.omit(insitu_nodes)
   node_ages <- ape::node.depth.edgelength(phy)
   n_tips <- ape::Ntip(phy)
   results <- data.frame()
@@ -76,7 +76,7 @@ detect_radiation_bursts <- function(phy, events, time_window = 5,
 
   if (plot && nrow(results) > 0) {
     islands <- unique(results$island)
-    colors  <- setNames(palette.colors(length(islands), "Okabe-Ito"), islands)
+    colors  <- stats::setNames(grDevices::palette.colors(length(islands), "Okabe-Ito"), islands)
 
     plot(phy,
          main = expression(paste("Adaptive radiation bursts")),
@@ -93,7 +93,7 @@ detect_radiation_bursts <- function(phy, events, time_window = 5,
                     frame = "none",
                     adj   = c(-0.2, -0.4))
 
-    legend("bottomleft",
+    graphics::legend("bottomleft",
            legend = islands,
            pch    = 19,
            col    = colors,

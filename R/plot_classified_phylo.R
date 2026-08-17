@@ -11,7 +11,7 @@
 
 plot_classified_phylo <- function(phy, events){
   islands <- unique(events$island)
-  colors <- setNames(palette.colors(length(islands), "Okabe-Ito"), islands)
+  colors <- stats::setNames(grDevices::palette.colors(length(islands), "Okabe-Ito"), islands)
 
   plot(phy,
        main = expression(paste("Island-Level ", italic("in situ"), " Speciation")),

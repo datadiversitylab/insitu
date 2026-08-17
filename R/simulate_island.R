@@ -92,9 +92,9 @@ simulate_island <- function(n_tips,
     assignment <- rep_len(paste0("island_", seq_len(n_islands)),
                           length(island_tip_names))
     assignment <- sample(assignment)  # randomize which tips go where
-    tip_islands <- setNames(assignment, island_tip_names)
+    tip_islands <- stats::setNames(assignment, island_tip_names)
   } else {
-    tip_islands <- setNames(
+    tip_islands <- stats::setNames(
       rep("island_1", length(island_tip_names)),
       island_tip_names
     )

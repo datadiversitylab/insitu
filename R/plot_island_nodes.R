@@ -6,7 +6,7 @@
 #' @export
 plot_island_nodes <- function(phy, node_class, PAM) {
   islands <- unique(PAM$locale)
-  colors  <- setNames(palette.colors(length(islands), "Okabe-Ito"), islands)
+  colors  <- stats::setNames(grDevices::palette.colors(length(islands), "Okabe-Ito"), islands)
 
   plot(phy,
        main = "Island node classification",
@@ -20,7 +20,7 @@ plot_island_nodes <- function(phy, node_class, PAM) {
   between <- node_class[node_class$status == "between_island", ]
   ape::nodelabels(node = between$node, pch = 19, col = "grey60")
 
-  legend("bottomleft",
+  graphics::legend("bottomleft",
          legend = c(islands, "between-island"),
          pch = 19,
          col = c(colors, "grey60"),

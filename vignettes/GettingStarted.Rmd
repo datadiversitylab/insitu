@@ -1,0 +1,89 @@
+---
+title: "Getting Started with insitu"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GettingStarted}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r docsetup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Data Preparation
+
+```{r dataprep}
+# Load insitu library
+library(insitu)
+
+# Read in example tree
+tree <- ape::read.tree(system.file("extdata/Patton_etal_trimmed.tree",
+                                       package = "insitu"))
+
+# Handle non-ultrametricity and incomplete taxon sampling
+tree <- prep_phylo(tree)
+
+# Read in example dataset
+dat <- read.csv(system.file("extdata/anolis_dat.csv",
+                            package = "insitu"))
+
+# Ensure that species represented in both the tree and data are the same
+matched <- match_island_phylo(phy = tree, locs = dat)
+```
+
+## Geography-Based Ancestral State Reconstruction
+
+```{r geo_asr}
+# Use the tree and PAM from the "matched" object to run an ancestral state reconstruction
+asr_insitu <- run_geo_asr(phy = matched$phy, PAM = matched$PAM)
+
+```
+
+## Classify Speciation Events
+
+```{r classify}
+# Using the ASR from above, determine whether speciation events occurred in situ
+map_events <- map_insitu_events(recons = asr_insitu,
+                                phy = matched$phy,
+                                PAM = matched$PAM,
+                                threshold = 0.5)
+
+# Look at the first 5 entries in the event data frame
+head(map_events, n = 5)
+
+```
+
+## Visualize Speciation Events on the Phylogeny
+
+```{r plot_phylo, fig.width = 8, fig.height = 6}
+
+plot_classified_phylo(phy = matched$phy, events = map_events)
+
+```
+
+## Partition Species Richness Into Different Components (in situ speciation, import, and export events)
+
+```{r decompose}
+div <- decompose_diversity(phy = matched$phy,
+                           events = map_events,
+                           PAM = matched$PAM)
+
+# Look at the first 5 rows of the classification data frame
+head(div, n = 5)
+```
+
+## Visualize Diversity Decomposition
+
+```{r plot_div, fig.width = 7, fig.height = 5}
+# Visualize diversity decomposition per island in a stacked bar chart
+plot_diversity_decomposition(div)
+
+# Determine whether:
+# - In situ speciation, import, and export counts differ across islands
+# - In situ and colonization rates differ across islands
+compare_islands(div)
+```
