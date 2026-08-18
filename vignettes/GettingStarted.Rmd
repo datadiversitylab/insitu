@@ -14,7 +14,23 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Introduction
+Extant biodiversity and species distribution across the globe result from the interplay of three fundamental processes: speciation, extinction, and dispersal. Evolutionary biologists often work to disentangle the contributions of each of these processes to the diversity we observe today. Furthermore, associating these processes with the geography on which they occur provides researchers with a clearer picture of how extant biodiversity emerged.
+
+We can associate speciation with geography by considering *in situ* speciation events. A speciation event is considered to be *in situ* when it occurs within a specific geographical range, as opposed to a lineage colonizing a location from elsewhere. The importance of *in situ* speciation for understanding diversity patterns has been emphasized by decades of work, much of which discusses how *in situ* speciation contributes to species richness on islands. 
+
+The `insitu` R package provides a suite of functions that allows the user to estimate *in situ* speciation events and quantify their contribution to biodiversity in discrete geographical units, with a primary focus on island systems and island-like environments. This vignette will cover the functions from the `insitu` package that are necessary to perform a basic analysis that classifies nodes on a phylogeny as *in situ* speciation, colonization, or dispersal events, as well as computing diversity decomposition metrics and visualizing results.
+
+This vignette will walk through the following steps in the `insitu` pipeline:
+
+* Data Preparation
+* Classifying Events and Diversity Decomposition
+* Indices and Support
+* Adaptive Radiation Bursts
+
+
 ## Data Preparation
+For its most basic functions, the `insitu` package requires the user to input a phylogeny and a list of locations that each species of interest occupies. The phylogenetic tree should be ultrametric and include all species listed in the location data, but if there are any mismatches in these datasets, the `insitu::prep_phylo()` and `insitu::match_island_phylo()` functions will address them. The example data here includes 30 island-dwelling *Anolis* lizard species sampled from the phylogenetic tree of all *Anolis* species included in Patton et al. (2021).
 
 ```{r dataprep}
 # Load insitu library
@@ -34,6 +50,10 @@ dat <- read.csv(system.file("extdata/anolis_dat.csv",
 # Ensure that species represented in both the tree and data are the same
 matched <- match_island_phylo(phy = tree, locs = dat)
 ```
+The `insitu::match_island_phylo()` function removes species that are not included in both the tree and the data, and it prints out the names of species removed from each. It also prints out the first five locations in the dataset as a way for users to determine whether the correct locations will be included in downstream analyses.
+
+## Classifying Events
+The `insitu` package provides multiple functions for estimating ancestral character states and classifying nodes on a phylogeny as *in situ* speciation, colonization, or dispersal events. First, we will use different methodology to estimate ancestral character states via ancestral state reconstruction (ASR). Then, we will classify each node as an appropriate event based on the estimated history of that node. Finally, we will estimate and visualize diversity decomposition at each node.
 
 ## Geography-Based Ancestral State Reconstruction
 
@@ -87,3 +107,50 @@ plot_diversity_decomposition(div)
 # - In situ and colonization rates differ across islands
 compare_islands(div)
 ```
+
+## Determine Colonization and *in situ* Speciation Rates
+```{r rates}
+# Colonization rate (how many times each species has colonized an island)
+colonization_rate(phy = matched$phy, events = map_events)
+
+# in situ speciation rate (how many times each species is associated
+#                          with an in situ speciation event)
+insitu_speciation_rate(phy = matched$phy, events = map_events)
+
+```
+
+## Calculate the in situ Speciation Index
+```{r index}
+# Per-siland in situ speciation index
+insitu_speciation_index(phy = matched$phy, events = map_events)
+```
+
+## Determine Node Support
+```{r confidence}
+# Determine per-node support for in situ speciation events
+insitu_confidence(recons = asr_insitu)
+```
+
+## Detect Adaptive Radiation Bursts
+```{r bursts1, fig.width = 8, fig.height = 6}
+# Identify nodes associated with radiation bursts
+detect_radiation_bursts(phy = matched$phy,
+                        events = map_events,
+                        time_window = 5,
+                        min_events = 2,
+                        plot = TRUE)
+
+```
+
+## Classify Nodes, But Without Using ASR First
+```{r classification, fig.width = 8, fig.height = 6}
+# Identify nodes as within-island, between-island, or ambiguous
+# Classification is only based on tip composition
+node_classification <- identify_island_nodes(phy = matched$phy, PAM = matched$PAM)
+# Add colors to nodes based on the classification determined above
+plot_island_nodes(phy = matched$phy, node_class = node_classification, PAM = matched$PAM)
+
+```
+
+## Literature Cited
+* Patton, A. H., Harmon, L. J., del Rosario Castañeda, M., Frank, H. K., Donihue, C. M., Herrel, A., & Losos, J. B. (2021). When adaptive radiations collide: Different evolutionary trajectories between and within island and mainland lizard clades. Proceedings of the National Academy of Sciences, 118(42), e2024451118
