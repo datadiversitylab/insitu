@@ -25,7 +25,7 @@ This vignette will walk through the following steps in the `insitu` pipeline:
 
 * Data Preparation
 * Classifying Events and Diversity Decomposition
-* Indices and Support
+* Rates, Indices, and Support
 * Adaptive Radiation Bursts
 
 
@@ -50,20 +50,27 @@ dat <- read.csv(system.file("extdata/anolis_dat.csv",
 # Ensure that species represented in both the tree and data are the same
 matched <- match_island_phylo(phy = tree, locs = dat)
 ```
-The `insitu::match_island_phylo()` function removes species that are not included in both the tree and the data, and it prints out the names of species removed from each. It also prints out the first five locations in the dataset as a way for users to determine whether the correct locations will be included in downstream analyses.
 
-## Classifying Events
-The `insitu` package provides multiple functions for estimating ancestral character states and classifying nodes on a phylogeny as *in situ* speciation, colonization, or dispersal events. First, we will use different methodology to estimate ancestral character states via ancestral state reconstruction (ASR). Then, we will classify each node as an appropriate event based on the estimated history of that node. Finally, we will estimate and visualize diversity decomposition at each node.
+The `insitu::match_island_phylo()` function removes species that are not included in both the tree and the data, and it prints out the names of species removed from each. It also prints out the first five locations in the dataset as a way for users to determine whether the correct locations will be included in downstream analyses. The `matched` object is a list of three items: a presence-absence matrix (PAM) that summarizes the islands each species occupies (1 for presence and 0 for absence), a tibble that lists each island and all species that are present on each island, and a phylogenetic tree with tips matching those in the user-provided dataset.
 
-## Geography-Based Ancestral State Reconstruction
+## Classifying Events and Diversity Decomposition
+The `insitu` package provides multiple functions for estimating ancestral character states and classifying nodes on a phylogeny as *in situ* speciation, colonization, or dispersal events. First, we will estimate ancestral character states via ancestral state reconstruction (ASR). Then, we will classify each node as an appropriate event based on the estimated history of that node. Next, we will estimate and visualize diversity decomposition at each node. Finally, we will cover methodology for classifying events without ancestral state reconstruction.
 
-```{r geo_asr}
+### Geography-Based Ancestral State Reconstruction
+The first method for estimating ancestral states uses the PAM included in the `matched` object created above to identify extant geographical character states for each species. Then, ancestral character states are estimated across the provided phylogeny for each island in the dataset.
+
+```{r geo_asr, warnings = FALSE}
 # Use the tree and PAM from the "matched" object to run an ancestral state reconstruction
 asr_insitu <- run_geo_asr(phy = matched$phy, PAM = matched$PAM)
 
 ```
 
-## Classify Speciation Events
+The `asr_insitu` object is a list of `ace` objects describing the ASR relevant to each island in the dataset. The number of elements in the list resulting from `insitu::run_geo_asr()` depends on the number of islands. In this case, there are six elements in the `asr_insitu` list.
+
+The `insitu` package also provides functionality for using stochastic character mapping to estimate ancestral states. The workflow for this methodology is outlined in the `Stochastic Character Mapping With insitu` vignette. At the end of the `Classifying Events and Diversity Decomposition` section, we also cover methods for classifying nodes that do not require ancestral state reconstruction.
+
+### Classify Speciation Events
+Now that we have estimated ancestral character states, we can use them to determine whether speciation events occurred *in situ* (within a given island) by determining whether the most recent common ancestor between two tips is likely to have occurred on the same island as the descendants. For this task, we will use the `insitu::map_insitu_events()` function. This function requires the user to input the ancestral state reconstructions returned by `insitu::run_geo_asr()`, the matched phylogeny and PAM returned by `insitu::match_island_phylo()`, and a threshold probability for determining whether *in situ* speciation is evident. The default threshold probability is 0.5, meaning that if the probability that an ancestor occupied a given island is 0.5 or greater, and the descendants of that node also have the same island state, the `insitu::match_island_phylo()` function will determine that an *in situ* speciation event occurred.
 
 ```{r classify}
 # Using the ASR from above, determine whether speciation events occurred in situ
@@ -77,7 +84,10 @@ head(map_events, n = 5)
 
 ```
 
-## Visualize Speciation Events on the Phylogeny
+The resulting data frame includes: the node number, the island state, the probability that the ancestor of a given node shares the same island state, and whether this node represents an *in situ* speciation event. The bottom of the data frame includes information on estimated transitions between islands, their associated nodes, and the islands associated with the transition. An island in the "export" column were originally occupied by the species that now occupy the island in the "import" column.
+
+### Visualize *in situ* Speciation Events on the Phylogeny
+We can visualize the probabilities and classifications provided by the `insitu::map_insitu_events()` function on the *Anolis* phylogeny using the `insitu::plot_classified_phylo()` function. When the ancestor presence probability has reached or exceeded the treshold (0.5 in this case), a colored dot will be placed on the associated node that corresponds to the island on which the *in situ* speciation event occurred. 
 
 ```{r plot_phylo, fig.width = 8, fig.height = 6}
 
@@ -85,7 +95,12 @@ plot_classified_phylo(phy = matched$phy, events = map_events)
 
 ```
 
-## Partition Species Richness Into Different Components (in situ speciation, import, and export events)
+This annotated phylogeny helps visualize how these *Anolis* species diversified across Cuba, Hispaniola, Jamaica, and Puerto Rico. 
+
+### Partition Species Richness Into Different Components (in situ speciation, import, and export events)
+When speciation events were classified above using the `insitu::map_insitu_events()` function, we acknowledged, but did not work with, the number of import and export events. The following functions address all of the different events discussed so far and summarize their relative importance to the system of interest.
+
+First, we will use the `insitu::decompose_diversity()` function with the phylogeny and PAM returned from the `insitu::match_island_phylo()` function, along with the events returned from the `insitu::map_insitu_events()` function to determine the number of species, *in situ* speciation events, import events, and export events associated with each island. 
 
 ```{r decompose}
 div <- decompose_diversity(phy = matched$phy,
@@ -96,42 +111,98 @@ div <- decompose_diversity(phy = matched$phy,
 head(div, n = 5)
 ```
 
-## Visualize Diversity Decomposition
+The results of the `insitu::decompose_diversity()` function give us a clearer picture of how species richness accumulated on each function. This diversity decomposition can be further visualized using the `insitu::plot_diversity_decomposition()` function.
 
 ```{r plot_div, fig.width = 7, fig.height = 5}
 # Visualize diversity decomposition per island in a stacked bar chart
 plot_diversity_decomposition(div)
+```
 
+The stacked bar plot above accentuates the importance of *in situ* speciation in contributing to species richness for Cuba, Hispaniola, Jamaica, and Puerto Rico, while also highlighting import and export events. We can compare these events statistically through the use of the `insitu::compare_islands()` function, which runs chi-squared and Kruskal-Wallis tests to determine whether event counts, *in situ* rates, and colonization rates differ across islands.
+
+```{r compare_div, warning = FALSE}
 # Determine whether:
 # - In situ speciation, import, and export counts differ across islands
 # - In situ and colonization rates differ across islands
-compare_islands(div)
+comp_div <- compare_islands(div)
 ```
 
-## Determine Colonization and *in situ* Speciation Rates
-```{r rates}
+The `comp_div` object created using the `insitu::compare_islands()` function is a list of three elements: `counts_test`, `insitu_rate_test`, and `colonization_rate_test`. Each one contains the summary output for each test: 
+- `counts_test` is a chi-squared test that determines whether *in situ* speciation, import, and export counts differ across islands.
+- `insitu_rate_test` is a Kruskal-Wallis test that determines whether *in situ* speciation rates differ across islands.
+- `colonization_rate_test` is a Kruskal-Wallis test that determines whether colonization rates differ across islands.
+
+The results for this example are printed below:
+
+```{r print_compare}
+comp_div
+
+```
+
+The p-values for each test indicate that the event counts in general differ between islands, but the *in situ* speciation and colonization rates are not statistically significantly different between islands.
+
+### Classify Nodes Without ASR
+Classifying nodes with the use of ancestral state probabilities as returned with ancestral state reconstruction (ASR) might be computationally intensive for certain datasets (e.g., if the study system includes hundreds of islands and hundreds of species). The `insitu::identify_island_nodes()` function uses only tip states to identify internal nodes as contributing to within-island or between-island diversification. Then, the `insitu::plot_island_nodes()` function can be used with the resulting node classification to visualize these diversification events on the phylogeny.
+
+```{r no-asr-class, fig.width = 8, fig.height = 6}
+# Identify nodes as within-island, between-island, or ambiguous
+# Classification is only based on tip composition
+node_classification <- identify_island_nodes(phy = matched$phy, PAM = matched$PAM)
+
+# Add colors to nodes based on the classification determined above
+plot_island_nodes(phy = matched$phy, node_class = node_classification, PAM = matched$PAM)
+
+```
+
+Note that when node classification is estimated based on tip states alone, there is more ambiguity about where species diversified due to the lack of estimated ancestral information. For example, we know that *Anolis sagrei* and *Anolis ophiolepis* speciated within Cuba (as correctly indicated in the phlogeny when `insitu::map_insitu_events()` was used earlier in this section), but when we classify nodes without ASR, the parent node of these species is labeled as between island speciation due to *Anolis sagrei* occurring on multiple islands.
+
+## Rates, Indices, and Support
+Up to this point, we have focused on event classification and visualization. In this section, we will cover functionality in the `insitu` package that allows for the calculation of helpful rates and indices that further contextualize the emergence of biodiversity on the islands of interest.
+
+### Determine Colonization and *in situ* Speciation Rates
+Species richness results from the interplay of speciation, extinction, and dispersal. Determining the rate at which species colonize and speciate within islands helps provide a clearer picture of the drivers of species richness. The `insitu` R package proves two functions that calculate rates related to colonization and *in situ* speciation.
+
+```{r col-rates}
 # Colonization rate (how many times each species has colonized an island)
 colonization_rate(phy = matched$phy, events = map_events)
 
+```
+
+Here, we can see that only *Anolis sagrei* and *Anolis distichus* were involved in colonization events.
+
+```{r situ-rates}
 # in situ speciation rate (how many times each species is associated
 #                          with an in situ speciation event)
 insitu_speciation_rate(phy = matched$phy, events = map_events)
 
 ```
 
-## Calculate the in situ Speciation Index
+In contrast, the majority of the focal *Anolis* species have contributed to an *in situ* speciation event.
+
+### Calculate the *in situ* Speciation Index
+In an effort to standardize comparisons across islands to determine the relative importance of *in situ* speciation events in contributing to species richness, the `insitu` package includes a function to calculate the `isci` index. This index represents the number of *in situ* speciation events on an island divided by the total branch length of the island's subtree.
+
 ```{r index}
-# Per-siland in situ speciation index
+# Per-island in situ speciation index
 insitu_speciation_index(phy = matched$phy, events = map_events)
 ```
 
-## Determine Node Support
+In this example, Puerto Rico has the largest `isci` value, indicating that *in situ* speciation contributed more species over a shorter amount of evolutionary time compared to the other islands.
+
+### Determine Node Support
+The `insitu::map_insitu_events()` function returns probabilities for the most likely ancestral states among all islands for each node. If the user would like to conduct additional sensitivity analyses related to these ancestral state probabilities, the `insitu` package provides a function that displays the ancestral state probabilities for each island and node combination. It also determines whether the given probability corresponds with low (probability less than 0.5), moderate (probability between 0.5 and 0.75), or high (probability above 0.75) support.
+
 ```{r confidence}
 # Determine per-node support for in situ speciation events
-insitu_confidence(recons = asr_insitu)
+insitu_conf <- insitu_confidence(recons = asr_insitu)
+
+head(insitu_conf, n = 30)
+
 ```
 
-## Detect Adaptive Radiation Bursts
+### Detect Adaptive Radiation Bursts
+Finally, the `insitu` package provides functionality to detect adaptive radiation events based on the estimated number of *in situ* speciation events. The `insitu::detect_radiation_bursts()` function identifies nodes where multiple sequential *in situ* speciation events have occurred within a user-defined time window. The default settings specify a time window (The maximum time span within which *in situ* events must occur to be considered a burst) of 5 Ma and a minimum of two in-situ speciation events within the time window to qualify it as a burst.
+
 ```{r bursts1, fig.width = 8, fig.height = 6}
 # Identify nodes associated with radiation bursts
 detect_radiation_bursts(phy = matched$phy,
@@ -142,15 +213,7 @@ detect_radiation_bursts(phy = matched$phy,
 
 ```
 
-## Classify Nodes, But Without Using ASR First
-```{r classification, fig.width = 8, fig.height = 6}
-# Identify nodes as within-island, between-island, or ambiguous
-# Classification is only based on tip composition
-node_classification <- identify_island_nodes(phy = matched$phy, PAM = matched$PAM)
-# Add colors to nodes based on the classification determined above
-plot_island_nodes(phy = matched$phy, node_class = node_classification, PAM = matched$PAM)
-
-```
+The resulting data frame and phylogeny highlight the radiation bursts that fit within the user-specified criteria. Here, the function has identified only Jamaica and Puerto Rico as candidates for radiation bursts.
 
 ## Literature Cited
 * Patton, A. H., Harmon, L. J., del Rosario Castañeda, M., Frank, H. K., Donihue, C. M., Herrel, A., & Losos, J. B. (2021). When adaptive radiations collide: Different evolutionary trajectories between and within island and mainland lizard clades. Proceedings of the National Academy of Sciences, 118(42), e2024451118
