@@ -91,7 +91,7 @@ We can visualize the probabilities and classifications provided by the `insitu::
 
 ```{r plot_phylo, fig.width = 8, fig.height = 6}
 
-plot_classified_phylo(phy = matched$phy, events = map_events)
+plot_classified_phylo(phy = matched$phy, events = map_events, PAM = matched$PAM)
 
 ```
 
@@ -141,26 +141,11 @@ comp_div
 
 The p-values for each test indicate that the event counts in general differ between islands, but the *in situ* speciation and colonization rates are not statistically significantly different between islands.
 
-### Classify Nodes Without ASR
-Classifying nodes with the use of ancestral state probabilities as returned with ancestral state reconstruction (ASR) might be computationally intensive for certain datasets (e.g., if the study system includes hundreds of islands and hundreds of species). The `insitu::identify_island_nodes()` function uses only tip states to identify internal nodes as contributing to within-island or between-island diversification. Then, the `insitu::plot_island_nodes()` function can be used with the resulting node classification to visualize these diversification events on the phylogeny.
-
-```{r no-asr-class, fig.width = 8, fig.height = 6}
-# Identify nodes as within-island, between-island, or ambiguous
-# Classification is only based on tip composition
-node_classification <- identify_island_nodes(phy = matched$phy, PAM = matched$PAM)
-
-# Add colors to nodes based on the classification determined above
-plot_island_nodes(phy = matched$phy, node_class = node_classification, PAM = matched$PAM)
-
-```
-
-Note that when node classification is estimated based on tip states alone, there is more ambiguity about where species diversified due to the lack of estimated ancestral information. For example, we know that *Anolis sagrei* and *Anolis ophiolepis* speciated within Cuba (as correctly indicated in the phlogeny when `insitu::map_insitu_events()` was used earlier in this section), but when we classify nodes without ASR, the parent node of these species is labeled as between island speciation due to *Anolis sagrei* occurring on multiple islands.
-
 ## Rates, Indices, and Support
 Up to this point, we have focused on event classification and visualization. In this section, we will cover functionality in the `insitu` package that allows for the calculation of helpful rates and indices that further contextualize the emergence of biodiversity on the islands of interest.
 
-### Determine Colonization and *in situ* Speciation Rates
-Species richness results from the interplay of speciation, extinction, and dispersal. Determining the rate at which species colonize and speciate within islands helps provide a clearer picture of the drivers of species richness. The `insitu` R package proves two functions that calculate rates related to colonization and *in situ* speciation.
+### Determine Colonization Rates
+Species richness results from the interplay of speciation, extinction, and dispersal. Determining the rate at which lineages colonize islands helps provide a clearer picture of the drivers of species richness. The `insitu::colonization_rate()` function determines how many colonization events each species is associated with and provides a colonization rate associated with that species' lineage.
 
 ```{r col-rates}
 # Colonization rate (how many times each species has colonized an island)
@@ -169,15 +154,6 @@ colonization_rate(phy = matched$phy, events = map_events)
 ```
 
 Here, we can see that only *Anolis sagrei* and *Anolis distichus* were involved in colonization events.
-
-```{r situ-rates}
-# in situ speciation rate (how many times each species is associated
-#                          with an in situ speciation event)
-insitu_speciation_rate(phy = matched$phy, events = map_events)
-
-```
-
-In contrast, the majority of the focal *Anolis* species have contributed to an *in situ* speciation event.
 
 ### Calculate the *in situ* Speciation Index
 In an effort to standardize comparisons across islands to determine the relative importance of *in situ* speciation events in contributing to species richness, the `insitu` package includes a function to calculate the `isci` index. This index represents the number of *in situ* speciation events on an island divided by the total branch length of the island's subtree.
@@ -200,20 +176,58 @@ head(insitu_conf, n = 30)
 
 ```
 
-### Detect Adaptive Radiation Bursts
-Finally, the `insitu` package provides functionality to detect adaptive radiation events based on the estimated number of *in situ* speciation events. The `insitu::detect_radiation_bursts()` function identifies nodes where multiple sequential *in situ* speciation events have occurred within a user-defined time window. The default settings specify a time window (The maximum time span within which *in situ* events must occur to be considered a burst) of 5 Ma and a minimum of two in-situ speciation events within the time window to qualify it as a burst.
+### Incorporating Island Ontogeny
+Island ontogeny describes the different stages of emergence and subsistence that oceanic islands experience, and can be thought of as an island's "life cycle." There exists a balance between the age of an island and it species richness: old, large islands often have more species compared to young, small islands, but once an island becomes old enough, it begins to lose area and habitat as it erodes into the ocean. Whittaker et al. (2008) incorporated island ontogeny in their General Dynamic Model of island biogeography, which we suggest users review for additional context.
 
-```{r bursts1, fig.width = 8, fig.height = 6}
-# Identify nodes associated with radiation bursts
-detect_radiation_bursts(phy = matched$phy,
-                        events = map_events,
-                        time_window = 5,
-                        min_events = 2,
-                        plot = TRUE)
+The `insitu` R package focuses on metrics that help us understand the role *in situ* speciation has in contributing to species richness on island systems. What do we do if an estimated *in situ* speciation event on an internal node is older than the island itself? By incorporating the age of islands in the dataset, we are able to determine whether it is appropriate to mark a node as an *in situ* speciation event on an island, or if the speciation event is more likely to have occurred on a continent before the lineage colonized the islands of interest.
+
+Geologists struggle to define exact ages for the Caribbean Islands, so the island ages written here are either estimates or manufactured ages that help us emphasize the functionality of the `insitu` R package. First, we will create a named vector of island ages for the 6 islands included in our example dataset. Then, we will use this named vector, along with the `map_events` object created by `insitu::map_insitu_events()` above and the matched phylogeny to determine whether the speciation events identified are realistic depending on the age of the islands
+
+```{r ontogeny1}
+# Create named numeric vector of island ages
+ages <- c(42,
+          50,
+          25,
+          46,
+          10,
+          15)
+island_names <- c("Cuba",
+                  "Hispaniola",
+                  "Jamaica",
+                  "Puerto Rico",
+                  "Cat Island",
+                  "Ile de la Tortue")
+# Assign the names to the numeric vector
+names(ages) <- island_names
+
+# Flag in situ speciation events if they are too young
+age_correct_events(events = map_events, 
+                   phy = matched$phy, 
+                   island_ages = ages, 
+                   remove_predating = FALSE)
 
 ```
 
-The resulting data frame and phylogeny highlight the radiation bursts that fit within the user-specified criteria. Here, the function has identified only Jamaica and Puerto Rico as candidates for radiation bursts.
+Here, we find that two *in situ* speciation events predate the islands on which they are estimated to occur: node 32 associated with Cuba, and node 35 associated with Jamaica. If we set the `remove_predating` parameter to `TRUE`, the function will remove these events and the returned data frame can be used to plot *in situ* speciation events on the phylogeny as above.
+
+```{r ontogeny2}
+# Remove in situ speciation events if they are too young
+new_events <- age_correct_events(events = map_events, 
+                                 phy = matched$phy, 
+                                 island_ages = ages, 
+                                 remove_predating = TRUE)
+
+# Plot phylogeny with newly filtered events
+plot_classified_phylo(phy = matched$phy, events = new_events, PAM = matched$PAM)
+
+```
+
+We can also incorporate island age into the calculation of `isci`, the *in situ* speciation rate index. The `insitu::insitu_rate_by_island_age()` function uses the phylogeny, event object created by `insitu::age_correct_events()`, and the named numeric vector of island ages created above to calculate the corrected `isci` value for each island.
+
+```{r age-index}
+insitu_rate_by_island_age(phy = matched$phy, events = new_events, island_ages = ages)
+```
 
 ## Literature Cited
 * Patton, A. H., Harmon, L. J., del Rosario Castañeda, M., Frank, H. K., Donihue, C. M., Herrel, A., & Losos, J. B. (2021). When adaptive radiations collide: Different evolutionary trajectories between and within island and mainland lizard clades. Proceedings of the National Academy of Sciences, 118(42), e2024451118
+* Whittaker, R. J., Triantis, K. A., & Ladie, R. J. (2008). A general dynamic theory of oceanic island biogeography. Journal of Biogeography, 35(6), 977–994.

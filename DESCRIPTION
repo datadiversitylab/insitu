@@ -14,7 +14,6 @@ Imports:
     phytools,
     reshape2,
     rlang,
-    stringr,
     utils
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

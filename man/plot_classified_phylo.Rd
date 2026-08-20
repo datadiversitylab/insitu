@@ -4,7 +4,7 @@
 \alias{plot_classified_phylo}
 \title{Dated phylogeny with branches and nodes colored by in-situ vs. colonization classification}
 \usage{
-plot_classified_phylo(phy, events)
+plot_classified_phylo(phy, events, PAM)
 }
 \arguments{
 \item{phy}{The phylogenetic tree associated with your data}
@@ -15,6 +15,9 @@ columns: node (internal node numbers associated with the given phylogenetic
 tree), island (the name of the island associated with the ancestral state
 for that node), and in_situ (logical - whether in situ speciation occurred
 at the given node).}
+
+\item{PAM}{The presence-absence matrix associated with your data as returned
+by the \code{match_island_phylo} function.}
 }
 \description{
 Dated phylogeny with branches and nodes colored by in-situ vs. colonization classification

@@ -58,7 +58,7 @@ The `sim_results` object includes per-island ancestral state probabilities for e
 events <- map_insitu_events(recons = sim_results, phy = matched$phy, PAM = matched$PAM)
 
 # Visualize the estimated in situ speciation events on the phylogeny
-plot_classified_phylo(phy = matched$phy, events = events)
+plot_classified_phylo(phy = matched$phy, events = events, PAM = matched$PAM)
 ```
 
 Here, we visualize the colonization and *in situ* speciation history for 30 *Anolis* species across four islands. As discussed in the Getting Started vignette, these events can be further contextualized using several functions from `insitu`. One option is the `insitu::decompose_diversity()` function, which provides users with counts of each type of potential event (*in situ* speciation, export, and import; see the Getting Started vignette for more details).
