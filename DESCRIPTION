@@ -1,8 +1,10 @@
 Package: insitu
 Title: Estimating in situ Speciation on Island Systems
 Version: 0.0.0.9000
-Authors@R: 
-    person("Kristen", "Martinet", , "kmartinet@arizona.edu", role = c("aut", "cre"))
+Authors@R: c(
+    person("Kristen", "Martinet", , "kmartinet@arizona.edu", role = c("aut", "cre")),
+    person("Cristian", "Román-Palacios", , "cromanpa@arizona.edu", role = c("aut", "ctb"))
+    )
 Description: What the package does (one paragraph).
 License: GPL (>=2)
 Encoding: UTF-8
@@ -25,3 +27,4 @@ Suggests:
     knitr,
     rmarkdown
 Config/testthat/edition: 3
+URL: https://datadiversitylab.github.io/insitu/
