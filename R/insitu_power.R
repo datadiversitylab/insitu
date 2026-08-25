@@ -86,7 +86,7 @@ insitu_power <- function(n_sim = 100,
     # Run pipeline
     recons <- tryCatch(
       if (use_simmap) {
-        simmap_insitu(phy = sim$phy, PAM = sim$PAM,
+        simmap_insitu(trees = sim$phy, PAM = sim$PAM,
                       model = model, nsim = nsim)
       } else {
         run_geo_asr(phy = sim$phy, PAM = sim$PAM, model = model)
@@ -105,26 +105,41 @@ insitu_power <- function(n_sim = 100,
     if (is.null(events)) return(NULL)
 
     # Compare recovered to true
-    true_nodes <- sim$true_events$node
-    recovered_nodes <- events$node[events$in_situ == TRUE]
-    n_all_internal <- ape::Nnode(sim$phy)
-    n_non_insitu <- n_all_internal - length(true_nodes)
+    # Nodes that both pipeline and ground truth identify as candidates
+    candidate_nodes  <- events$node[events$island != "TRANSITION" &
+                                      !is.na(events$in_situ)]
+    true_insitu      <- sim$true_events$node
+    pipeline_insitu  <- events$node[events$in_situ == TRUE]
 
-    n_recovered <- length(intersect(true_nodes, recovered_nodes))
-    n_false_positive <- length(setdiff(recovered_nodes, true_nodes))
+    # Of the topological candidates, how many does the ASR threshold
+    # correctly call in-situ vs incorrectly suppress?
+    true_pos   <- length(intersect(pipeline_insitu, true_insitu))
+    false_neg  <- length(setdiff(true_insitu, pipeline_insitu))
+    false_pos  <- length(setdiff(pipeline_insitu, true_insitu))
 
     data.frame(
-      sim = s,
-      n_true_insitu = length(true_nodes),
-      n_recovered = n_recovered,
-      n_false_positive = n_false_positive,
-      sensitivity = if (length(true_nodes) > 0)
-        n_recovered / length(true_nodes) else NA,
-      false_positive_rate = if (n_non_insitu > 0)
-        n_false_positive / n_non_insitu else NA,
-      stringsAsFactors    = FALSE
+      sim             = s,
+      n_true_insitu   = length(true_insitu),
+      n_recovered     = true_pos,
+      n_false_neg     = false_neg,
+      n_false_pos     = false_pos,
+      sensitivity     = true_pos / max(1L, length(true_insitu)),
+      precision       = true_pos / max(1L, length(pipeline_insitu)),
+      stringsAsFactors = FALSE
     )
   })
 
-  do.call(rbind, Filter(Negate(is.null), out))
+  out_combined <- do.call(rbind, Filter(Negate(is.null), out))
+
+  # Remove replicates with no true in-situ events — they are uninformative
+  # and produce NA for all metrics
+  valid   <- out_combined[out_combined$n_true_insitu > 0, ]
+  n_skipped <- nrow(out_combined) - nrow(valid)
+
+  if (n_skipped > 0)
+    message(n_skipped, " of ", n_sim, " replicates had no true in-situ events ",
+            "and were excluded. Consider increasing colonization_rate or n_tips.")
+
+  valid
 }
+

@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate_island.R
 \name{simulate_island}
 \alias{simulate_island}
-\title{Simulates island assemblages under expected colonization, speciation, and
+\title{Simulates island assemblages under known colonization, speciation, and
 extinction parameters}
 \usage{
 simulate_island(
@@ -10,7 +10,6 @@ simulate_island(
   birth_rate,
   death_rate = 0,
   colonization_rate,
-  back_rate = 0,
   island_extinction_fraction = 0,
   n_islands = 1,
   seed = NULL
@@ -21,47 +20,39 @@ simulate_island(
 
 \item{birth_rate}{Per-lineage speciation rate.}
 
-\item{death_rate}{Per-lineage extinction rate. Set to \code{0} for a
-pure-birth tree.}
+\item{death_rate}{Per-lineage extinction rate. Default: \code{0}.}
 
-\item{colonization_rate}{Rate of transitions from mainland to island per
-unit branch length.}
-
-\item{back_rate}{Rate of transitions from island back to mainland per unit
-branch length. Default: \code{0} (no back-colonization).}
+\item{colonization_rate}{Expected number of colonization events per unit
+of total branch length. Controls how many internal nodes are selected
+as colonization origins.}
 
 \item{island_extinction_fraction}{Proportion of island tips to remove at
-random, simulating island extinction. Default: \code{0}.}
+random, simulating extinction. Default: \code{0}.}
 
-\item{n_islands}{Number of distinct islands to simulate. When greater than
-1, island states are distributed evenly across island-assigned tips.
-Default: \code{1}.}
+\item{n_islands}{Number of distinct islands. Colonization nodes are
+distributed across islands in sequence. Default: \code{1}.}
 
-\item{seed}{Optional random seed for reproducibility.}
+\item{seed}{Optional random seed. Default: \code{NULL}.}
 }
 \value{
-A named list with elements:
-\describe{
-\item{\code{phy}}{The simulated (and possibly pruned) phylogeny.}
-\item{\code{PAM}}{A presence-absence matrix in the format expected by
-\code{run_geo_asr} and \code{map_insitu_events}.}
-\item{\code{true_events}}{A data frame with the same structure as the
-output of \code{map_insitu_events}, containing the ground-truth
-in-situ classifications.}
-}
+A named list with elements \code{phy}, \code{PAM}, and
+\code{true_events}. \code{true_events} has the same structure as the
+output of \code{map_insitu_events} and serves as the ground truth for
+power analysis.
 }
 \description{
 Generates a dated phylogeny and presence-absence matrix under a
-birth-death-colonization process with known parameters. This function
-returns both the simulated data and the true event table.
+birth-death-colonization process with known parameters, returning both the
+simulated data and the true event table for use in
+\code{\link{insitu_power}}.
 }
 \details{
-In this function, a mainland tree of \code{n_mainland} species is generated
-under a birth-death process. Geographic states are then
-generated along the tree using a continuous-time Markov model where
-\code{colonization_rate} governs transitions from mainland to island.
-\code{back_rate} governs the reverse. Extinction is applied by pruning a
-random fraction of island tips. Yet, we acknowledge that extinction is not
-always random. The resulting tip states define the PAM, and nodes where
-both parent and child reconstruct as island are the true in-situ events.
+The simulation places colonization events directly on the tree by randomly
+selecting internal nodes as colonization origins. The number of colonization
+events is drawn from a Poisson distribution with mean equal to
+\code{colonization_rate} multiplied by the total branch length of the tree.
+Tips descending from a colonization node are assigned to an island; all
+other tips are mainland. True in-situ events are nodes where both descendant
+clades share exactly one island, computed directly from the simulated
+topology without any ASR.
 }
