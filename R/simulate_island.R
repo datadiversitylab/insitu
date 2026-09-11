@@ -202,7 +202,7 @@ simulate_island <- function(n_tips,
       tip_islands[sp] else "Mainland")] <- 1L
     PAM[[sp]] <- col
   }
-
+  all_tip_regions <- stats::setNames(rep("Mainland", n_species), phy$tip.label)
   all_tip_regions[names(tip_islands)] <- tip_islands
 
   true_events <- data.frame()
