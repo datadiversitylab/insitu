@@ -186,17 +186,8 @@ simulate_island <- function(n_tips,
     return(NULL)
   }
 
-<<<<<<< HEAD
-  # Assign colonization nodes to islands (cycle through islands)
-  node_to_island <- stats::setNames(
-    paste0("island_", ((seq_along(col_nodes) - 1L) %% n_islands) + 1L),
-    as.character(col_nodes)
-  )
 
-  tip_islands <- stats::setNames(
-=======
   tip_islands <- setNames(
->>>>>>> 4e26ed3 (Diversification rates for power analyses)
     node_to_island[as.character(tip_col_ancestor[island_tip_idx])],
     phy$tip.label[island_tip_idx]
   )
@@ -212,12 +203,6 @@ simulate_island <- function(n_tips,
     PAM[[sp]] <- col
   }
 
-<<<<<<< HEAD
-  # Region lookup for all tips
-  all_tip_regions <- stats::setNames(rep("Mainland", n_species), phy$tip.label)
-=======
-  all_tip_regions <- setNames(rep("Mainland", n_species), phy$tip.label)
->>>>>>> 4e26ed3 (Diversification rates for power analyses)
   all_tip_regions[names(tip_islands)] <- tip_islands
 
   true_events <- data.frame()

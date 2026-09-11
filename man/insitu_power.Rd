@@ -7,11 +7,14 @@
 insitu_power(
   n_sim = 100,
   n_tips,
-  birth_rate,
-  death_rate = 0,
+  diversification_rate,
+  extinction_fraction = 0,
+  diversification_rate_island = NULL,
+  extinction_fraction_island = NULL,
   colonization_rate,
-  island_extinction_fraction = 0,
   n_islands = 1,
+  n_mainland = 1,
+  monophyletic_island = TRUE,
   threshold = 0.5,
   model = "ER",
   use_simmap = FALSE,
@@ -23,17 +26,25 @@ insitu_power(
 
 \item{n_tips}{Total number of tips per simulated tree.}
 
-\item{birth_rate}{Per-lineage speciation rate.}
+\item{diversification_rate}{Net diversification rate (birth - death).}
 
-\item{death_rate}{Per-lineage extinction rate. Default: \code{0}.}
+\item{extinction_fraction}{Relative extinction rate (death / birth),
+between 0 and 1. Default: \code{0}.}
 
-\item{colonization_rate}{Rate of mainland-to-island transitions per unit
-branch length.}
+\item{diversification_rate_island}{Island-specific net diversification rate.
+Defaults to \code{diversification_rate} when not set.}
 
-\item{island_extinction_fraction}{Proportion of island tips to remove,
-simulating extinction. Default: \code{0}.}
+\item{extinction_fraction_island}{Island-specific relative extinction.
+Defaults to \code{extinction_fraction} when not set.}
+
+\item{colonization_rate}{Rate of inter-island colonization events per unit
+of total branch length.}
 
 \item{n_islands}{Number of islands to simulate. Default: \code{1}.}
+
+\item{n_mainland}{Number of mainland tips. Default: \code{1}.}
+
+\item{monophyletic_island}{Logical. Default: \code{TRUE}.}
 
 \item{threshold}{ASR probability threshold passed to
 \code{map_insitu_events}. Default: \code{0.5}.}
@@ -42,27 +53,16 @@ simulating extinction. Default: \code{0}.}
 \code{simmap_insitu}. Default: \code{"ER"}.}
 
 \item{use_simmap}{Logical. If \code{TRUE}, uses \code{simmap_insitu}
-instead of \code{run_geo_asr} to propagate ASR uncertainty through
-the power analysis. Default: \code{FALSE}.}
+instead of \code{run_geo_asr}. Default: \code{FALSE}.}
 
 \item{nsim}{Number of stochastic maps per replicate when
 \code{use_simmap = TRUE}. Default: \code{10}.}
 }
 \value{
-A data frame with one row per simulation replicate and columns:
-\describe{
-\item{\code{sim}}{Replicate number.}
-\item{\code{n_true_insitu}}{Number of true in-situ events in the
-simulated data.}
-\item{\code{n_recovered}}{Number of true in-situ events correctly
-recovered by the pipeline.}
-\item{\code{n_false_positive}}{Nodes classified as in-situ that were
-not true in-situ events.}
-\item{\code{sensitivity}}{True positive rate: \code{n_recovered /
-      n_true_insitu}.}
-\item{\code{false_positive_rate}}{False positive rate: \code{
-      n_false_positive / n_non_insitu_nodes}.}
-}
+A data frame with one row per simulation replicate and columns
+\code{sim}, \code{n_true_insitu}, \code{n_recovered},
+\code{n_false_neg}, \code{n_false_pos}, \code{sensitivity}, and
+\code{precision}.
 }
 \description{
 Runs repeated simulations under known colonization, speciation, and
@@ -73,9 +73,9 @@ applied, and recovered events are compared to the known ground truth.
 }
 \details{
 Sensitivity measures the proportion of true in-situ events that the
-pipeline correctly identifies. Specificity measures the proportion of
-true non-in-situ nodes that are correctly left unclassified as in-situ.
-Both vary with tree size, extinction rate, and the ASR threshold, so
-running this function across a range of parameter values directly answers
-how trustworthy a given set of in-situ classifications is likely to be.
+pipeline correctly identifies. Precision measures the proportion of
+pipeline in-situ calls that are truly in-situ. Both vary with tree size,
+extinction rate, and the ASR threshold, so running this function across
+a range of parameter values directly answers how trustworthy a given set
+of in-situ classifications is likely to be.
 }

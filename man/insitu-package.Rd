@@ -8,8 +8,20 @@
 \description{
 What the package does (one paragraph).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://datadiversitylab.github.io/insitu/}
+}
+
+}
 \author{
 \strong{Maintainer}: Kristen Martinet \email{kmartinet@arizona.edu}
+
+Authors:
+\itemize{
+  \item Cristian Román-Palacios \email{cromanpa@arizona.edu} [contributor]
+}
 
 }
 \keyword{internal}

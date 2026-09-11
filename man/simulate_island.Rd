@@ -7,38 +7,47 @@ extinction parameters}
 \usage{
 simulate_island(
   n_tips,
-  birth_rate,
-  death_rate = 0,
+  diversification_rate,
+  extinction_fraction = 0,
+  diversification_rate_island = NULL,
+  extinction_fraction_island = NULL,
   colonization_rate,
-  island_extinction_fraction = 0,
   n_islands = 1,
+  n_mainland = 1,
+  monophyletic_island = TRUE,
   seed = NULL
 )
 }
 \arguments{
 \item{n_tips}{Total number of tips in the simulated tree.}
 
-\item{birth_rate}{Per-lineage speciation rate.}
+\item{diversification_rate}{Net diversification rate (birth - death).}
 
-\item{death_rate}{Per-lineage extinction rate. Default: \code{0}.}
+\item{extinction_fraction}{Relative extinction rate (death / birth),
+between 0 and 1. Default: \code{0}.}
 
-\item{colonization_rate}{Expected number of colonization events per unit
-of total branch length. Controls how many internal nodes are selected
-as colonization origins.}
+\item{diversification_rate_island}{Island-specific net diversification rate.
+Defaults to \code{diversification_rate} when not set.}
 
-\item{island_extinction_fraction}{Proportion of island tips to remove at
-random, simulating extinction. Default: \code{0}.}
+\item{extinction_fraction_island}{Island-specific relative extinction.
+Defaults to \code{extinction_fraction} when not set.}
 
-\item{n_islands}{Number of distinct islands. Colonization nodes are
-distributed across islands in sequence. Default: \code{1}.}
+\item{colonization_rate}{Expected number of inter-island colonization events
+per unit of total branch length.}
+
+\item{n_islands}{Number of distinct islands. Default: \code{1}.}
+
+\item{n_mainland}{Number of tips forced to be mainland. Default: \code{1}.}
+
+\item{monophyletic_island}{Logical. If \code{TRUE} (default), all island
+species descend from a single crown node. If \code{FALSE}, colonization
+nodes are placed freely across the tree.}
 
 \item{seed}{Optional random seed. Default: \code{NULL}.}
 }
 \value{
 A named list with elements \code{phy}, \code{PAM}, and
-\code{true_events}. \code{true_events} has the same structure as the
-output of \code{map_insitu_events} and serves as the ground truth for
-power analysis.
+\code{true_events}.
 }
 \description{
 Generates a dated phylogeny and presence-absence matrix under a
@@ -47,12 +56,15 @@ simulated data and the true event table for use in
 \code{\link{insitu_power}}.
 }
 \details{
-The simulation places colonization events directly on the tree by randomly
-selecting internal nodes as colonization origins. The number of colonization
-events is drawn from a Poisson distribution with mean equal to
-\code{colonization_rate} multiplied by the total branch length of the tree.
-Tips descending from a colonization node are assigned to an island; all
-other tips are mainland. True in-situ events are nodes where both descendant
-clades share exactly one island, computed directly from the simulated
-topology without any ASR.
+When \code{monophyletic_island = TRUE}, all island species descend from a
+single crown node, reflecting the biology of most island radiations where
+all island species trace back to a single colonization from the mainland.
+Inter-island colonization events are then placed within that clade. When
+\code{monophyletic_island = FALSE}, colonization nodes are placed freely
+across the tree.
+
+Speciation and extinction rates are specified as net diversification rate
+and extinction fraction. Birth and death rates are derived internally as:
+\code{birth = diversification / (1 - extinction_fraction)} and
+\code{death = birth * extinction_fraction}.
 }
