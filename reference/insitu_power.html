@@ -57,11 +57,14 @@ applied, and recovered events are compared to the known ground truth.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">insitu_power</span><span class="op">(</span></span>
 <span>  n_sim <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  <span class="va">n_tips</span>,</span>
-<span>  <span class="va">birth_rate</span>,</span>
-<span>  death_rate <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  <span class="va">diversification_rate</span>,</span>
+<span>  extinction_fraction <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  diversification_rate_island <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  extinction_fraction_island <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">colonization_rate</span>,</span>
-<span>  island_extinction_fraction <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  n_islands <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  n_mainland <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  monophyletic_island <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"ER"</span>,</span>
 <span>  use_simmap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -81,26 +84,40 @@ applied, and recovered events are compared to the known ground truth.</p>
 <dd><p>Total number of tips per simulated tree.</p></dd>
 
 
-<dt id="arg-birth-rate">birth_rate<a class="anchor" aria-label="anchor" href="#arg-birth-rate"></a></dt>
-<dd><p>Per-lineage speciation rate.</p></dd>
+<dt id="arg-diversification-rate">diversification_rate<a class="anchor" aria-label="anchor" href="#arg-diversification-rate"></a></dt>
+<dd><p>Net diversification rate (birth - death).</p></dd>
 
 
-<dt id="arg-death-rate">death_rate<a class="anchor" aria-label="anchor" href="#arg-death-rate"></a></dt>
-<dd><p>Per-lineage extinction rate. Default: <code>0</code>.</p></dd>
+<dt id="arg-extinction-fraction">extinction_fraction<a class="anchor" aria-label="anchor" href="#arg-extinction-fraction"></a></dt>
+<dd><p>Relative extinction rate (death / birth),
+between 0 and 1. Default: <code>0</code>.</p></dd>
+
+
+<dt id="arg-diversification-rate-island">diversification_rate_island<a class="anchor" aria-label="anchor" href="#arg-diversification-rate-island"></a></dt>
+<dd><p>Island-specific net diversification rate.
+Defaults to <code>diversification_rate</code> when not set.</p></dd>
+
+
+<dt id="arg-extinction-fraction-island">extinction_fraction_island<a class="anchor" aria-label="anchor" href="#arg-extinction-fraction-island"></a></dt>
+<dd><p>Island-specific relative extinction.
+Defaults to <code>extinction_fraction</code> when not set.</p></dd>
 
 
 <dt id="arg-colonization-rate">colonization_rate<a class="anchor" aria-label="anchor" href="#arg-colonization-rate"></a></dt>
-<dd><p>Rate of mainland-to-island transitions per unit
-branch length.</p></dd>
-
-
-<dt id="arg-island-extinction-fraction">island_extinction_fraction<a class="anchor" aria-label="anchor" href="#arg-island-extinction-fraction"></a></dt>
-<dd><p>Proportion of island tips to remove,
-simulating extinction. Default: <code>0</code>.</p></dd>
+<dd><p>Rate of inter-island colonization events per unit
+of total branch length.</p></dd>
 
 
 <dt id="arg-n-islands">n_islands<a class="anchor" aria-label="anchor" href="#arg-n-islands"></a></dt>
 <dd><p>Number of islands to simulate. Default: <code>1</code>.</p></dd>
+
+
+<dt id="arg-n-mainland">n_mainland<a class="anchor" aria-label="anchor" href="#arg-n-mainland"></a></dt>
+<dd><p>Number of mainland tips. Default: <code>1</code>.</p></dd>
+
+
+<dt id="arg-monophyletic-island">monophyletic_island<a class="anchor" aria-label="anchor" href="#arg-monophyletic-island"></a></dt>
+<dd><p>Logical. Default: <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
@@ -115,8 +132,7 @@ simulating extinction. Default: <code>0</code>.</p></dd>
 
 <dt id="arg-use-simmap">use_simmap<a class="anchor" aria-label="anchor" href="#arg-use-simmap"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, uses <code>simmap_insitu</code>
-instead of <code>run_geo_asr</code> to propagate ASR uncertainty through
-the power analysis. Default: <code>FALSE</code>.</p></dd>
+instead of <code>run_geo_asr</code>. Default: <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -126,39 +142,19 @@ the power analysis. Default: <code>FALSE</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame with one row per simulation replicate and columns:</p><dl><dt><code>sim</code></dt>
-<dd><p>Replicate number.</p></dd>
-
-<dt><code>n_true_insitu</code></dt>
-<dd><p>Number of true in-situ events in the
-simulated data.</p></dd>
-
-<dt><code>n_recovered</code></dt>
-<dd><p>Number of true in-situ events correctly
-recovered by the pipeline.</p></dd>
-
-<dt><code>n_false_positive</code></dt>
-<dd><p>Nodes classified as in-situ that were
-not true in-situ events.</p></dd>
-
-<dt><code>sensitivity</code></dt>
-<dd><p>True positive rate: <code>n_recovered /
-      n_true_insitu</code>.</p></dd>
-
-<dt><code>false_positive_rate</code></dt>
-<dd><p>False positive rate: <code>
-      n_false_positive / n_non_insitu_nodes</code>.</p></dd>
-
-
-</dl></div>
+    <p>A data frame with one row per simulation replicate and columns
+<code>sim</code>, <code>n_true_insitu</code>, <code>n_recovered</code>,
+<code>n_false_neg</code>, <code>n_false_pos</code>, <code>sensitivity</code>, and
+<code>precision</code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Sensitivity measures the proportion of true in-situ events that the
-pipeline correctly identifies. Specificity measures the proportion of
-true non-in-situ nodes that are correctly left unclassified as in-situ.
-Both vary with tree size, extinction rate, and the ASR threshold, so
-running this function across a range of parameter values directly answers
-how trustworthy a given set of in-situ classifications is likely to be.</p>
+pipeline correctly identifies. Precision measures the proportion of
+pipeline in-situ calls that are truly in-situ. Both vary with tree size,
+extinction rate, and the ASR threshold, so running this function across
+a range of parameter values directly answers how trustworthy a given set
+of in-situ classifications is likely to be.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

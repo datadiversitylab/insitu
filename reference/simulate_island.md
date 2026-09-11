@@ -10,11 +10,14 @@ the simulated data and the true event table for use in
 ``` r
 simulate_island(
   n_tips,
-  birth_rate,
-  death_rate = 0,
+  diversification_rate,
+  extinction_fraction = 0,
+  diversification_rate_island = NULL,
+  extinction_fraction_island = NULL,
   colonization_rate,
-  island_extinction_fraction = 0,
   n_islands = 1,
+  n_mainland = 1,
+  monophyletic_island = TRUE,
   seed = NULL
 )
 ```
@@ -25,29 +28,43 @@ simulate_island(
 
   Total number of tips in the simulated tree.
 
-- birth_rate:
+- diversification_rate:
 
-  Per-lineage speciation rate.
+  Net diversification rate (birth - death).
 
-- death_rate:
+- extinction_fraction:
 
-  Per-lineage extinction rate. Default: `0`.
+  Relative extinction rate (death / birth), between 0 and 1. Default:
+  `0`.
+
+- diversification_rate_island:
+
+  Island-specific net diversification rate. Defaults to
+  `diversification_rate` when not set.
+
+- extinction_fraction_island:
+
+  Island-specific relative extinction. Defaults to `extinction_fraction`
+  when not set.
 
 - colonization_rate:
 
-  Expected number of colonization events per unit of total branch
-  length. Controls how many internal nodes are selected as colonization
-  origins.
-
-- island_extinction_fraction:
-
-  Proportion of island tips to remove at random, simulating extinction.
-  Default: `0`.
+  Expected number of inter-island colonization events per unit of total
+  branch length.
 
 - n_islands:
 
-  Number of distinct islands. Colonization nodes are distributed across
-  islands in sequence. Default: `1`.
+  Number of distinct islands. Default: `1`.
+
+- n_mainland:
+
+  Number of tips forced to be mainland. Default: `1`.
+
+- monophyletic_island:
+
+  Logical. If `TRUE` (default), all island species descend from a single
+  crown node. If `FALSE`, colonization nodes are placed freely across
+  the tree.
 
 - seed:
 
@@ -56,16 +73,17 @@ simulate_island(
 ## Value
 
 A named list with elements `phy`, `PAM`, and `true_events`.
-`true_events` has the same structure as the output of
-`map_insitu_events` and serves as the ground truth for power analysis.
 
 ## Details
 
-The simulation places colonization events directly on the tree by
-randomly selecting internal nodes as colonization origins. The number of
-colonization events is drawn from a Poisson distribution with mean equal
-to `colonization_rate` multiplied by the total branch length of the
-tree. Tips descending from a colonization node are assigned to an
-island; all other tips are mainland. True in-situ events are nodes where
-both descendant clades share exactly one island, computed directly from
-the simulated topology without any ASR.
+When `monophyletic_island = TRUE`, all island species descend from a
+single crown node, reflecting the biology of most island radiations
+where all island species trace back to a single colonization from the
+mainland. Inter-island colonization events are then placed within that
+clade. When `monophyletic_island = FALSE`, colonization nodes are placed
+freely across the tree.
+
+Speciation and extinction rates are specified as net diversification
+rate and extinction fraction. Birth and death rates are derived
+internally as: `birth = diversification / (1 - extinction_fraction)` and
+`death = birth * extinction_fraction`.

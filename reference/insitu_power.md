@@ -14,11 +14,14 @@ known ground truth.
 insitu_power(
   n_sim = 100,
   n_tips,
-  birth_rate,
-  death_rate = 0,
+  diversification_rate,
+  extinction_fraction = 0,
+  diversification_rate_island = NULL,
+  extinction_fraction_island = NULL,
   colonization_rate,
-  island_extinction_fraction = 0,
   n_islands = 1,
+  n_mainland = 1,
+  monophyletic_island = TRUE,
   threshold = 0.5,
   model = "ER",
   use_simmap = FALSE,
@@ -36,26 +39,41 @@ insitu_power(
 
   Total number of tips per simulated tree.
 
-- birth_rate:
+- diversification_rate:
 
-  Per-lineage speciation rate.
+  Net diversification rate (birth - death).
 
-- death_rate:
+- extinction_fraction:
 
-  Per-lineage extinction rate. Default: `0`.
+  Relative extinction rate (death / birth), between 0 and 1. Default:
+  `0`.
+
+- diversification_rate_island:
+
+  Island-specific net diversification rate. Defaults to
+  `diversification_rate` when not set.
+
+- extinction_fraction_island:
+
+  Island-specific relative extinction. Defaults to `extinction_fraction`
+  when not set.
 
 - colonization_rate:
 
-  Rate of mainland-to-island transitions per unit branch length.
-
-- island_extinction_fraction:
-
-  Proportion of island tips to remove, simulating extinction. Default:
-  `0`.
+  Rate of inter-island colonization events per unit of total branch
+  length.
 
 - n_islands:
 
   Number of islands to simulate. Default: `1`.
+
+- n_mainland:
+
+  Number of mainland tips. Default: `1`.
+
+- monophyletic_island:
+
+  Logical. Default: `TRUE`.
 
 - threshold:
 
@@ -69,9 +87,8 @@ insitu_power(
 
 - use_simmap:
 
-  Logical. If `TRUE`, uses `simmap_insitu` instead of `run_geo_asr` to
-  propagate ASR uncertainty through the power analysis. Default:
-  `FALSE`.
+  Logical. If `TRUE`, uses `simmap_insitu` instead of `run_geo_asr`.
+  Default: `FALSE`.
 
 - nsim:
 
@@ -80,38 +97,15 @@ insitu_power(
 
 ## Value
 
-A data frame with one row per simulation replicate and columns:
-
-- `sim`:
-
-  Replicate number.
-
-- `n_true_insitu`:
-
-  Number of true in-situ events in the simulated data.
-
-- `n_recovered`:
-
-  Number of true in-situ events correctly recovered by the pipeline.
-
-- `n_false_positive`:
-
-  Nodes classified as in-situ that were not true in-situ events.
-
-- `sensitivity`:
-
-  True positive rate: `n_recovered / n_true_insitu`.
-
-- `false_positive_rate`:
-
-  False positive rate: ` n_false_positive / n_non_insitu_nodes`.
+A data frame with one row per simulation replicate and columns `sim`,
+`n_true_insitu`, `n_recovered`, `n_false_neg`, `n_false_pos`,
+`sensitivity`, and `precision`.
 
 ## Details
 
 Sensitivity measures the proportion of true in-situ events that the
-pipeline correctly identifies. Specificity measures the proportion of
-true non-in-situ nodes that are correctly left unclassified as in-situ.
-Both vary with tree size, extinction rate, and the ASR threshold, so
-running this function across a range of parameter values directly
-answers how trustworthy a given set of in-situ classifications is likely
-to be.
+pipeline correctly identifies. Precision measures the proportion of
+pipeline in-situ calls that are truly in-situ. Both vary with tree size,
+extinction rate, and the ASR threshold, so running this function across
+a range of parameter values directly answers how trustworthy a given set
+of in-situ classifications is likely to be.
