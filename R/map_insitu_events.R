@@ -148,9 +148,12 @@ map_insitu_events <- function(recons, phy, PAM, threshold = 0.5){
 
   results$export <- NA
   results$import <- NA
-  transitions$ancestor_presence_prob <- NA
-  transitions$in_situ <- NA
-  transitions$island <- "TRANSITION"
-  results <- rbind(results, transitions)
+  if (nrow(transitions) > 0) {
+    transitions$ancestor_presence_prob <- NA
+    transitions$in_situ                <- NA
+    transitions$island                 <- "TRANSITION"
+    results <- rbind(results, transitions)
+  }
+
   return(results)
 }
