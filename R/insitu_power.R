@@ -8,10 +8,7 @@
 #'
 #' Sensitivity measures the proportion of true in-situ events that the
 #' pipeline correctly identifies. Precision measures the proportion of
-#' pipeline in-situ calls that are truly in-situ. Both vary with tree size,
-#' extinction rate, and the ASR threshold, so running this function across
-#' a range of parameter values directly answers how trustworthy a given set
-#' of in-situ classifications is likely to be.
+#' pipeline in-situ calls that are truly in-situ.
 #'
 #' @param n_sim Number of simulation replicates. Default: \code{100}.
 #' @param n_tips Total number of tips per simulated tree.
@@ -22,11 +19,12 @@
 #'   Defaults to \code{diversification_rate} when not set.
 #' @param extinction_fraction_island Island-specific relative extinction.
 #'   Defaults to \code{extinction_fraction} when not set.
-#' @param colonization_rate Rate of inter-island colonization events per unit
-#'   of total branch length.
+#' @param mainland_colonization_rate Rate of mainland-to-island colonization
+#'   events per unit of total mainland branch length.
+#' @param inter_island_rate Rate of inter-island dispersal events per unit of
+#'   total island branch length.
 #' @param n_islands Number of islands to simulate. Default: \code{1}.
 #' @param n_mainland Number of mainland tips. Default: \code{1}.
-#' @param monophyletic_island Logical. Default: \code{TRUE}.
 #' @param threshold ASR probability threshold passed to
 #'   \code{map_insitu_events}. Default: \code{0.5}.
 #' @param model Transition model passed to \code{run_geo_asr} or
@@ -43,19 +41,19 @@
 #'
 #' @export
 insitu_power <- function(n_sim                       = 100,
-                          n_tips,
-                          diversification_rate,
-                          extinction_fraction         = 0,
-                          diversification_rate_island = NULL,
-                          extinction_fraction_island  = NULL,
-                          colonization_rate,
-                          n_islands                   = 1,
-                          n_mainland                  = 1,
-                          monophyletic_island         = TRUE,
-                          threshold                   = 0.5,
-                          model                       = "ER",
-                          use_simmap                  = FALSE,
-                          nsim                        = 10) {
+                         n_tips,
+                         diversification_rate,
+                         extinction_fraction         = 0,
+                         diversification_rate_island = NULL,
+                         extinction_fraction_island  = NULL,
+                         mainland_colonization_rate,
+                         inter_island_rate,
+                         n_islands                   = 1,
+                         n_mainland                  = 1,
+                         threshold                   = 0.5,
+                         model                       = "ER",
+                         use_simmap                  = FALSE,
+                         nsim                        = 10) {
 
   out <- lapply(seq_len(n_sim), function(s) {
     sim <- simulate_island(
@@ -64,21 +62,21 @@ insitu_power <- function(n_sim                       = 100,
       extinction_fraction         = extinction_fraction,
       diversification_rate_island = diversification_rate_island,
       extinction_fraction_island  = extinction_fraction_island,
-      colonization_rate           = colonization_rate,
+      mainland_colonization_rate  = mainland_colonization_rate,
+      inter_island_rate           = inter_island_rate,
       n_islands                   = n_islands,
       n_mainland                  = n_mainland,
-      monophyletic_island         = monophyletic_island,
       seed                        = s
     )
 
     if (is.null(sim) || nrow(sim$true_events) == 0) {
-      return(data.frame(sim           = s,
-                        n_true_insitu = 0L,
-                        n_recovered   = 0L,
-                        n_false_neg   = 0L,
-                        n_false_pos   = 0L,
-                        sensitivity   = NA_real_,
-                        precision     = NA_real_,
+      return(data.frame(sim              = s,
+                        n_true_insitu    = 0L,
+                        n_recovered      = 0L,
+                        n_false_neg      = 0L,
+                        n_false_pos      = 0L,
+                        sensitivity      = NA_real_,
+                        precision        = NA_real_,
                         stringsAsFactors = FALSE))
     }
 
@@ -113,13 +111,13 @@ insitu_power <- function(n_sim                       = 100,
     false_pos <- length(setdiff(pipeline_pairs,   true_pairs))
 
     data.frame(
-      sim           = s,
-      n_true_insitu = length(true_pairs),
-      n_recovered   = true_pos,
-      n_false_neg   = false_neg,
-      n_false_pos   = false_pos,
-      sensitivity   = true_pos / max(1L, length(true_pairs)),
-      precision     = true_pos / max(1L, length(pipeline_pairs)),
+      sim              = s,
+      n_true_insitu    = length(true_pairs),
+      n_recovered      = true_pos,
+      n_false_neg      = false_neg,
+      n_false_pos      = false_pos,
+      sensitivity      = true_pos / max(1L, length(true_pairs)),
+      precision        = true_pos / max(1L, length(pipeline_pairs)),
       stringsAsFactors = FALSE
     )
   })
@@ -133,14 +131,16 @@ insitu_power <- function(n_sim                       = 100,
 
   if (length(out_clean) == 0L) return(NULL)
 
-  out_combined <- do.call(rbind, lapply(out_clean, function(x) x[expected_cols]))
+  out_combined <- do.call(rbind,
+                          lapply(out_clean, function(x) x[expected_cols]))
 
   valid     <- out_combined[out_combined$n_true_insitu > 0, ]
   n_skipped <- nrow(out_combined) - nrow(valid)
 
   if (n_skipped > 0)
     message(n_skipped, " of ", n_sim, " replicates had no true in-situ events ",
-            "and were excluded. Consider increasing colonization_rate or n_tips.")
+            "and were excluded. Consider increasing mainland_colonization_rate ",
+            "or inter_island_rate.")
 
   valid
 }
