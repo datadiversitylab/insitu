@@ -18,10 +18,10 @@ insitu_power(
   extinction_fraction = 0,
   diversification_rate_island = NULL,
   extinction_fraction_island = NULL,
-  colonization_rate,
+  mainland_colonization_rate,
+  inter_island_rate,
   n_islands = 1,
   n_mainland = 1,
-  monophyletic_island = TRUE,
   threshold = 0.5,
   model = "ER",
   use_simmap = FALSE,
@@ -58,9 +58,14 @@ insitu_power(
   Island-specific relative extinction. Defaults to `extinction_fraction`
   when not set.
 
-- colonization_rate:
+- mainland_colonization_rate:
 
-  Rate of inter-island colonization events per unit of total branch
+  Rate of mainland-to-island colonization events per unit of total
+  mainland branch length.
+
+- inter_island_rate:
+
+  Rate of inter-island dispersal events per unit of total island branch
   length.
 
 - n_islands:
@@ -70,10 +75,6 @@ insitu_power(
 - n_mainland:
 
   Number of mainland tips. Default: `1`.
-
-- monophyletic_island:
-
-  Logical. Default: `TRUE`.
 
 - threshold:
 
@@ -105,7 +106,4 @@ A data frame with one row per simulation replicate and columns `sim`,
 
 Sensitivity measures the proportion of true in-situ events that the
 pipeline correctly identifies. Precision measures the proportion of
-pipeline in-situ calls that are truly in-situ. Both vary with tree size,
-extinction rate, and the ASR threshold, so running this function across
-a range of parameter values directly answers how trustworthy a given set
-of in-situ classifications is likely to be.
+pipeline in-situ calls that are truly in-situ.

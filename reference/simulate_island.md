@@ -14,10 +14,10 @@ simulate_island(
   extinction_fraction = 0,
   diversification_rate_island = NULL,
   extinction_fraction_island = NULL,
-  colonization_rate,
+  mainland_colonization_rate,
+  inter_island_rate,
   n_islands = 1,
   n_mainland = 1,
-  monophyletic_island = TRUE,
   seed = NULL
 )
 ```
@@ -30,27 +30,32 @@ simulate_island(
 
 - diversification_rate:
 
-  Net diversification rate (birth - death).
+  Net mainland diversification rate (birth - death).
 
 - extinction_fraction:
 
-  Relative extinction rate (death / birth), between 0 and 1. Default:
-  `0`.
+  Mainland relative extinction (death / birth), between 0 and 1.
+  Default: `0`.
 
 - diversification_rate_island:
 
-  Island-specific net diversification rate. Defaults to
-  `diversification_rate` when not set.
+  Island net diversification rate. Defaults to `diversification_rate`
+  when not set.
 
 - extinction_fraction_island:
 
-  Island-specific relative extinction. Defaults to `extinction_fraction`
-  when not set.
+  Island relative extinction. Defaults to `extinction_fraction` when not
+  set.
 
-- colonization_rate:
+- mainland_colonization_rate:
 
-  Expected number of inter-island colonization events per unit of total
-  branch length.
+  Rate of mainland-to-island colonization events per unit of total
+  mainland branch length.
+
+- inter_island_rate:
+
+  Rate of inter-island dispersal events per unit of total island branch
+  length.
 
 - n_islands:
 
@@ -58,13 +63,7 @@ simulate_island(
 
 - n_mainland:
 
-  Number of tips forced to be mainland. Default: `1`.
-
-- monophyletic_island:
-
-  Logical. If `TRUE` (default), all island species descend from a single
-  crown node. If `FALSE`, colonization nodes are placed freely across
-  the tree.
+  Number of mainland tips. Default: `1`.
 
 - seed:
 
@@ -76,14 +75,17 @@ A named list with elements `phy`, `PAM`, and `true_events`.
 
 ## Details
 
-When `monophyletic_island = TRUE`, all island species descend from a
-single crown node, reflecting the biology of most island radiations
-where all island species trace back to a single colonization from the
-mainland. Inter-island colonization events are then placed within that
-clade. When `monophyletic_island = FALSE`, colonization nodes are placed
-freely across the tree.
+The simulation models three distinct processes. Mainland lineages
+colonize the island system at rate `mainland_colonization_rate`: the
+number of independent colonization events is drawn from a Poisson
+distribution with mean equal to that rate multiplied by the total
+mainland branch length. When only one event is drawn, all island species
+are monophyletic; when multiple events are drawn, the island assemblage
+is polyphyletic. Once on the island system, lineages disperse between
+islands at rate `inter_island_rate`. Speciation and extinction proceed
+at island-specific rates that may differ from the mainland.
 
-Speciation and extinction rates are specified as net diversification
-rate and extinction fraction. Birth and death rates are derived
-internally as: `birth = diversification / (1 - extinction_fraction)` and
-`death = birth * extinction_fraction`.
+True in-situ events are nodes where both descendant clades share exactly
+one island AND descend from the same mainland colonization event. Nodes
+spanning two independent colonization-derived clades are not in-situ at
+the system level even if their descendants share an island.

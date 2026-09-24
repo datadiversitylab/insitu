@@ -61,10 +61,10 @@ applied, and recovered events are compared to the known ground truth.</p>
 <span>  extinction_fraction <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  diversification_rate_island <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  extinction_fraction_island <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">colonization_rate</span>,</span>
+<span>  <span class="va">mainland_colonization_rate</span>,</span>
+<span>  <span class="va">inter_island_rate</span>,</span>
 <span>  n_islands <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  n_mainland <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  monophyletic_island <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"ER"</span>,</span>
 <span>  use_simmap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -103,9 +103,14 @@ Defaults to <code>diversification_rate</code> when not set.</p></dd>
 Defaults to <code>extinction_fraction</code> when not set.</p></dd>
 
 
-<dt id="arg-colonization-rate">colonization_rate<a class="anchor" aria-label="anchor" href="#arg-colonization-rate"></a></dt>
-<dd><p>Rate of inter-island colonization events per unit
-of total branch length.</p></dd>
+<dt id="arg-mainland-colonization-rate">mainland_colonization_rate<a class="anchor" aria-label="anchor" href="#arg-mainland-colonization-rate"></a></dt>
+<dd><p>Rate of mainland-to-island colonization
+events per unit of total mainland branch length.</p></dd>
+
+
+<dt id="arg-inter-island-rate">inter_island_rate<a class="anchor" aria-label="anchor" href="#arg-inter-island-rate"></a></dt>
+<dd><p>Rate of inter-island dispersal events per unit of
+total island branch length.</p></dd>
 
 
 <dt id="arg-n-islands">n_islands<a class="anchor" aria-label="anchor" href="#arg-n-islands"></a></dt>
@@ -114,10 +119,6 @@ of total branch length.</p></dd>
 
 <dt id="arg-n-mainland">n_mainland<a class="anchor" aria-label="anchor" href="#arg-n-mainland"></a></dt>
 <dd><p>Number of mainland tips. Default: <code>1</code>.</p></dd>
-
-
-<dt id="arg-monophyletic-island">monophyletic_island<a class="anchor" aria-label="anchor" href="#arg-monophyletic-island"></a></dt>
-<dd><p>Logical. Default: <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
@@ -151,10 +152,7 @@ instead of <code>run_geo_asr</code>. Default: <code>FALSE</code>.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Sensitivity measures the proportion of true in-situ events that the
 pipeline correctly identifies. Precision measures the proportion of
-pipeline in-situ calls that are truly in-situ. Both vary with tree size,
-extinction rate, and the ASR threshold, so running this function across
-a range of parameter values directly answers how trustworthy a given set
-of in-situ classifications is likely to be.</p>
+pipeline in-situ calls that are truly in-situ.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

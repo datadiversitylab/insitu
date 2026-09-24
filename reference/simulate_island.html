@@ -57,10 +57,10 @@ simulated data and the true event table for use in
 <span>  extinction_fraction <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  diversification_rate_island <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  extinction_fraction_island <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">colonization_rate</span>,</span>
+<span>  <span class="va">mainland_colonization_rate</span>,</span>
+<span>  <span class="va">inter_island_rate</span>,</span>
 <span>  n_islands <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  n_mainland <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  monophyletic_island <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -74,27 +74,32 @@ simulated data and the true event table for use in
 
 
 <dt id="arg-diversification-rate">diversification_rate<a class="anchor" aria-label="anchor" href="#arg-diversification-rate"></a></dt>
-<dd><p>Net diversification rate (birth - death).</p></dd>
+<dd><p>Net mainland diversification rate (birth - death).</p></dd>
 
 
 <dt id="arg-extinction-fraction">extinction_fraction<a class="anchor" aria-label="anchor" href="#arg-extinction-fraction"></a></dt>
-<dd><p>Relative extinction rate (death / birth),
+<dd><p>Mainland relative extinction (death / birth),
 between 0 and 1. Default: <code>0</code>.</p></dd>
 
 
 <dt id="arg-diversification-rate-island">diversification_rate_island<a class="anchor" aria-label="anchor" href="#arg-diversification-rate-island"></a></dt>
-<dd><p>Island-specific net diversification rate.
+<dd><p>Island net diversification rate.
 Defaults to <code>diversification_rate</code> when not set.</p></dd>
 
 
 <dt id="arg-extinction-fraction-island">extinction_fraction_island<a class="anchor" aria-label="anchor" href="#arg-extinction-fraction-island"></a></dt>
-<dd><p>Island-specific relative extinction.
+<dd><p>Island relative extinction.
 Defaults to <code>extinction_fraction</code> when not set.</p></dd>
 
 
-<dt id="arg-colonization-rate">colonization_rate<a class="anchor" aria-label="anchor" href="#arg-colonization-rate"></a></dt>
-<dd><p>Expected number of inter-island colonization events
-per unit of total branch length.</p></dd>
+<dt id="arg-mainland-colonization-rate">mainland_colonization_rate<a class="anchor" aria-label="anchor" href="#arg-mainland-colonization-rate"></a></dt>
+<dd><p>Rate of mainland-to-island colonization
+events per unit of total mainland branch length.</p></dd>
+
+
+<dt id="arg-inter-island-rate">inter_island_rate<a class="anchor" aria-label="anchor" href="#arg-inter-island-rate"></a></dt>
+<dd><p>Rate of inter-island dispersal events per unit of
+total island branch length.</p></dd>
 
 
 <dt id="arg-n-islands">n_islands<a class="anchor" aria-label="anchor" href="#arg-n-islands"></a></dt>
@@ -102,13 +107,7 @@ per unit of total branch length.</p></dd>
 
 
 <dt id="arg-n-mainland">n_mainland<a class="anchor" aria-label="anchor" href="#arg-n-mainland"></a></dt>
-<dd><p>Number of tips forced to be mainland. Default: <code>1</code>.</p></dd>
-
-
-<dt id="arg-monophyletic-island">monophyletic_island<a class="anchor" aria-label="anchor" href="#arg-monophyletic-island"></a></dt>
-<dd><p>Logical. If <code>TRUE</code> (default), all island
-species descend from a single crown node. If <code>FALSE</code>, colonization
-nodes are placed freely across the tree.</p></dd>
+<dd><p>Number of mainland tips. Default: <code>1</code>.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -122,16 +121,19 @@ nodes are placed freely across the tree.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>When <code>monophyletic_island = TRUE</code>, all island species descend from a
-single crown node, reflecting the biology of most island radiations where
-all island species trace back to a single colonization from the mainland.
-Inter-island colonization events are then placed within that clade. When
-<code>monophyletic_island = FALSE</code>, colonization nodes are placed freely
-across the tree.</p>
-<p>Speciation and extinction rates are specified as net diversification rate
-and extinction fraction. Birth and death rates are derived internally as:
-<code>birth = diversification / (1 - extinction_fraction)</code> and
-<code>death = birth * extinction_fraction</code>.</p>
+    <p>The simulation models three distinct processes. Mainland lineages colonize
+the island system at rate <code>mainland_colonization_rate</code>: the number of
+independent colonization events is drawn from a Poisson distribution with
+mean equal to that rate multiplied by the total mainland branch length. When
+only one event is drawn, all island species are monophyletic; when multiple
+events are drawn, the island assemblage is polyphyletic. Once on the island
+system, lineages disperse between islands at rate <code>inter_island_rate</code>.
+Speciation and extinction proceed at island-specific rates that may differ
+from the mainland.</p>
+<p>True in-situ events are nodes where both descendant clades share exactly one
+island AND descend from the same mainland colonization event. Nodes spanning
+two independent colonization-derived clades are not in-situ at the system
+level even if their descendants share an island.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
