@@ -4,10 +4,10 @@ For each island, counts in-situ speciation, import, and export events.
 In-situ speciation events are identified as cases in which an ancestral
 node is assigned to the same region as its descendant. Import events are
 cases where a descendant node is assigned to a different region than its
-ancestor. Export events are the reverse: the ancestral node is assigned
-to the focal island while its descendant is assigned to a different
-region. Both ancestor and descendant must be assigned to a region for
-any event to be detected.
+ancestor. Export events are instances where the ancestral node is
+assigned to the focal island while its descendant is assigned to a
+different region. Both ancestor and descendant must be assigned to a
+region for any event to be detected.
 
 ## Usage
 

@@ -1,13 +1,9 @@
 # Computes island-age-corrected in-situ speciation rates
 
-Modifies
-[`insitu_speciation_rate`](https://datadiversitylab.github.io/insitu/reference/insitu_speciation_rate.md)
-to use island formation age as the time denominator rather than total
-root-to-tip path length. This gives the rate of in-situ speciation per
-unit time that the island has existed. This approach allows for
-comparing diversification dynamics across islands of different
-geological ages.Events that predate island formation are excluded from
-the count before computing rates.
+Gives the rate of in-situ speciation per unit time that the island has
+existed. This approach allows for comparing diversification dynamics
+across islands of different geological ages. Events that predate island
+formation are excluded from the count before computing rates.
 
 ## Usage
 

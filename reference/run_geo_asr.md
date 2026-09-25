@@ -1,6 +1,6 @@
-# Runs geographic state ASR (discrete: island; mainland?)
+# Runs geographic state ASR (discrete: island; mainland)
 
-Runs geographic state ASR (discrete: island; mainland?)
+Runs geographic state ASR (discrete: island; mainland)
 
 ## Usage
 

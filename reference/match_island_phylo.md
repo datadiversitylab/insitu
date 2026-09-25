@@ -17,7 +17,7 @@ match_island_phylo(phy, locs, exclude = TRUE)
 
 - locs:
 
-  A dataframe with 2 columns: "species" and "locale". Each row should
+  A dataframe with two columns: "species" and "locale". Each row should
   represent a single locality where that species is located (e.x., if a
   species is found in multiple localities, there should be multiple rows
   for that species). This package focuses on island occurrences, so if a

@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Stochastic Character Mapping With insitu • insitu</title>
+<title>Stochastic character mapping with insitu • insitu</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Stochastic Character Mapping With insitu">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Stochastic character mapping with insitu">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,8 +33,9 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/GettingStarted.html">Getting Started with insitu</a></li>
-    <li><a class="dropdown-item" href="../articles/StochasticCharMapping.html">Stochastic Character Mapping With insitu</a></li>
+<li><a class="dropdown-item" href="../articles/GettingStarted.html">Getting started with insitu</a></li>
+    <li><a class="dropdown-item" href="../articles/Simulations.html">Simulating island radiations and testing pipeline performance</a></li>
+    <li><a class="dropdown-item" href="../articles/StochasticCharMapping.html">Stochastic character mapping with insitu</a></li>
   </ul>
 </li>
       </ul>
@@ -55,7 +56,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Stochastic Character Mapping With insitu</h1>
+      <h1>Stochastic character mapping with insitu</h1>
             
       
 
@@ -65,131 +66,258 @@
     
     
 <div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>Stochastic character mapping is a specialization of ancestral state
-reconstruction (ASR) that estimates the history of character state
-changes across branches, instead of only at the nodes as in traditional
-ASR. <code><a href="https://rdrr.io/pkg/ape/man/ace.html" class="external-link">ape::ace()</a></code>, which is used in
-<code><a href="../reference/run_geo_asr.html">insitu::run_geo_asr()</a></code>, is a traditional implementation of
-ASR. Stochastic character mapping provides measures of uncertainty for
-estimated character state changes by randomly sampling potential
-evolutionary histories across the phylogeny.</p>
-<p>In this vignette, we will use stochastic character mapping to
-estimate the geographic history of a small sample of <em>Anolis</em>
-lizards native to the Caribbean Islands.</p>
-<p>First, let’s load and prepare the <em>Anolis</em> example data that
-we used in the Getting Started vignette.</p>
+<p><code>run_geo_asr</code> estimates a single maximum likelihood
+ancestral state reconstruction for each island. Stochastic character
+mapping goes further by sampling many possible evolutionary histories
+consistent with the data, giving you a posterior distribution of in-situ
+event classifications rather than a single point estimate.</p>
+<p><code>simmap_insitu</code> wraps <code><a href="https://rdrr.io/pkg/phytools/man/make.simmap.html" class="external-link">phytools::make.simmap</a></code>
+and returns the same output structure as <code>run_geo_asr</code>, so it
+plugs directly into <code>map_insitu_events</code> and everything
+downstream without any changes to the rest of your workflow. It also
+accepts a list of trees, propagating phylogenetic uncertainty from a
+posterior sample alongside ASR uncertainty from the stochastic maps.</p>
+</div>
+<div class="section level2">
+<h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
+</h2>
+<p>Load and prepare the same <em>Anolis</em> dataset used in the Getting
+Started vignette. Both vignettes use the same objects, so if you are
+working through them in order you can skip this step.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load insitu library</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://datadiversitylab.github.io/insitu/">insitu</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://datadiversitylab.github.io/insitu/">insitu</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Read in example tree</span></span>
-<span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu">ape</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.tree.html" class="external-link">read.tree</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Patton_etal_trimmed.tree"</span>,</span>
-<span>                                       package <span class="op">=</span> <span class="st">"insitu"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu">ape</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.tree.html" class="external-link">read.tree</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Patton_etal_trimmed.tree"</span>, package <span class="op">=</span> <span class="st">"insitu"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">dat</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/anolis_dat.csv"</span>, package <span class="op">=</span> <span class="st">"insitu"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Handle non-ultrametricity and incomplete taxon sampling</span></span>
-<span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_phylo.html">prep_phylo</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
+<span><span class="va">tree</span>    <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_phylo.html">prep_phylo</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
+<span><span class="va">matched</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/match_island_phylo.html">match_island_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">tree</span>, locs <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Species dropped from the tree because they were not in the data: transversalis and heterodermus</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Species dropped from the data because they were not in the tree: loysiana</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Matching complete! Here are the first 5 locales in your data:</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
+<span><span class="co">#&gt;   locale           species_list                                         richness</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Cat Island       distichus                                                   1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Cuba             luteogularis, equestris, alutaceus, vanidicus, porc…       10</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Hispaniola       coelestinus, aliniger, bahorucoensis, olssoni, inso…       10</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Ile de la Tortue distichus                                                   1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Jamaica          valencienni, lineatopus, garmani, grahami, sagrei           5</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="running-stochastic-character-mapping">Running stochastic character mapping<a class="anchor" aria-label="anchor" href="#running-stochastic-character-mapping"></a>
+</h2>
+<p>Pass the matched tree and PAM to <code>simmap_insitu</code> with a
+transition model and the number of stochastic maps to draw. More maps
+give more stable posterior averages at the cost of computation time; 100
+is reasonable for publication analyses, 10 is sufficient for
+exploration.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simmap_insitu.html">simmap_insitu</a></span><span class="op">(</span></span>
+<span>  phy   <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>,</span>
+<span>  PAM   <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"ER"</span>,</span>
+<span>  nsim  <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running MCMC burn-in. Please wait....</span></span>
+<span><span class="co">#&gt; Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
+<span><span class="co">#&gt; Please wait....</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Running MCMC burn-in. Please wait....</span></span>
+<span><span class="co">#&gt; Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
+<span><span class="co">#&gt; Please wait....</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Running MCMC burn-in. Please wait....</span></span>
+<span><span class="co">#&gt; Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
+<span><span class="co">#&gt; Please wait....</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Running MCMC burn-in. Please wait....</span></span>
+<span><span class="co">#&gt; Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
+<span><span class="co">#&gt; Please wait....</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Running MCMC burn-in. Please wait....</span></span>
+<span><span class="co">#&gt; Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
+<span><span class="co">#&gt; Please wait....</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Running MCMC burn-in. Please wait....</span></span>
+<span><span class="co">#&gt; Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
+<span><span class="co">#&gt; Please wait....</span></span></code></pre></div>
+<p>The result is a named list in exactly the same format as the output
+of <code>run_geo_asr</code>. The probabilities at each node now reflect
+the average across all stochastic maps rather than a single likelihood
+estimate.</p>
+</div>
+<div class="section level2">
+<h2 id="propagating-phylogenetic-uncertainty">Propagating phylogenetic uncertainty<a class="anchor" aria-label="anchor" href="#propagating-phylogenetic-uncertainty"></a>
+</h2>
+<p>If you have a posterior sample of trees from a Bayesian analysis,
+pass them as a list. <code>simmap_insitu</code> runs the stochastic maps
+on each tree and averages the posteriors across both trees and maps.
+This is the recommended approach for publication analyses where
+phylogenetic uncertainty is non-trivial.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># trees is a multiPhylo object from a Bayesian posterior sample</span></span>
+<span><span class="va">sim_results_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simmap_insitu.html">simmap_insitu</a></span><span class="op">(</span></span>
+<span>  phy   <span class="op">=</span> <span class="va">trees</span>,    <span class="co"># list of phylo objects</span></span>
+<span>  PAM   <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"ER"</span>,</span>
+<span>  nsim  <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="classifying-events-and-comparing-to-the-ml-reconstruction">Classifying events and comparing to the ML reconstruction<a class="anchor" aria-label="anchor" href="#classifying-events-and-comparing-to-the-ml-reconstruction"></a>
+</h2>
+<p>Event classification from <code>simmap_insitu</code> works
+identically to classification from <code>run_geo_asr</code>. Pass the
+result directly to <code>map_insitu_events</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">events_simmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/map_insitu_events.html">map_insitu_events</a></span><span class="op">(</span></span>
+<span>  recons    <span class="op">=</span> <span class="va">sim_results</span>,</span>
+<span>  phy       <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>,</span>
+<span>  PAM       <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">0.5</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Read in example dataset</span></span>
-<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/anolis_dat.csv"</span>,</span>
-<span>                            package <span class="op">=</span> <span class="st">"insitu"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">events_simmap</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   node     island ancestor_presence_prob in_situ export import</span></span>
+<span><span class="co">#&gt; 1   32       Cuba                    0.0   FALSE   &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2   33 Hispaniola                    0.5    TRUE   &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3   35    Jamaica                    0.0   FALSE   &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4   36    Jamaica                    0.9    TRUE   &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5   37    Jamaica                    1.0    TRUE   &lt;NA&gt;   &lt;NA&gt;</span></span></code></pre></div>
+<p>Comparing the simmap classification to the ML classification from
+<code>run_geo_asr</code> is a quick way to assess whether the two
+approaches agree. Nodes where they disagree are candidates for closer
+inspection using <code>insitu_confidence</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">asr_ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_geo_asr.html">run_geo_asr</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>, PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span>, model <span class="op">=</span> <span class="st">"ER"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Ensure that species represented in both the tree and data are the same</span></span>
-<span><span class="va">matched</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/match_island_phylo.html">match_island_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">tree</span>, locs <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## ℹ Species dropped from the tree because they were not in the data: transversalis and heterodermus</span></span></code></pre>
-<pre><code><span><span class="co">## ℹ Species dropped from the data because they were not in the tree: loysiana</span></span></code></pre>
-<pre><code><span><span class="co">## ℹ Matching complete! Here are the first 5 locales in your data:</span></span></code></pre>
-<pre><code><span><span class="co">## # A tibble: 5 × 3</span></span>
-<span><span class="co">##   locale           species_list                                                                            richness</span></span>
-<span><span class="co">##   &lt;chr&gt;            &lt;chr&gt;                                                                                      &lt;int&gt;</span></span>
-<span><span class="co">## 1 Cat Island       distichus                                                                                      1</span></span>
-<span><span class="co">## 2 Cuba             luteogularis, equestris, alutaceus, vanidicus, porcatus, paternus, angusticeps, ahli, …       10</span></span>
-<span><span class="co">## 3 Hispaniola       coelestinus, aliniger, bahorucoensis, olssoni, insolitus, barahonae, brevirostris, dis…       10</span></span>
-<span><span class="co">## 4 Ile de la Tortue distichus                                                                                      1</span></span>
-<span><span class="co">## 5 Jamaica          valencienni, lineatopus, garmani, grahami, sagrei                                              5</span></span></code></pre>
-<div class="section level3">
-<h3 id="stochastic-character-mapping">Stochastic Character Mapping<a class="anchor" aria-label="anchor" href="#stochastic-character-mapping"></a>
-</h3>
-<p>Next, we will run the key function for estimating the geographic
-history of 30 species of <em>Anolis</em> lizards that occur on the
-Caribbean Islands: <code><a href="../reference/simmap_insitu.html">insitu::simmap_insitu()</a></code>. Once our data
-has been processed, we can use the <code><a href="../reference/simmap_insitu.html">insitu::simmap_insitu()</a></code>
-function with the phylogeny and presence-absence matrix (PAM) that are
-returned by <code><a href="../reference/match_island_phylo.html">insitu::match_island_phylo()</a></code>. The function also
-requires the user to specify a transition model and a number of
-simulations. The documentation for <code><a href="https://rdrr.io/pkg/ape/man/ace.html" class="external-link">ape::ace()</a></code> includes more
-information about transition models, and for this example, we will use
-the equal rates (ER) model. The ER model assumes that every state change
-has the same rate. The <code><a href="../reference/simmap_insitu.html">insitu::simmap_insitu()</a></code> function
-uses the <code><a href="https://rdrr.io/pkg/phytools/man/make.simmap.html" class="external-link">phytools::make.simmap()</a></code> function for stochastic
-character mapping.</p>
+<span><span class="va">events_ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/map_insitu_events.html">map_insitu_events</a></span><span class="op">(</span></span>
+<span>  recons    <span class="op">=</span> <span class="va">asr_ml</span>,</span>
+<span>  phy       <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>,</span>
+<span>  PAM       <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">0.5</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"In-situ events (ML):     "</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">events_ml</span><span class="op">$</span><span class="va">in_situ</span>    <span class="op">==</span> <span class="cn">TRUE</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; In-situ events (ML):      16</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"In-situ events (simmap): "</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">events_simmap</span><span class="op">$</span><span class="va">in_situ</span> <span class="op">==</span> <span class="cn">TRUE</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; In-situ events (simmap):  19</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="visualizing-the-simmap-classification">Visualizing the simmap classification<a class="anchor" aria-label="anchor" href="#visualizing-the-simmap-classification"></a>
+</h2>
+<p><code>plot_classified_phylo</code> works with either reconstruction.
+Nodes where the simmap posterior probability is close to the threshold
+will show visually in the same way, but a wider ribbon of support can be
+inspected more directly with <code>insitu_confidence</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Run simmap_insitu</span></span>
-<span><span class="va">sim_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simmap_insitu.html">simmap_insitu</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>,</span>
-<span>                             PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span>,</span>
-<span>                             model <span class="op">=</span> <span class="st">"ER"</span>,</span>
-<span>                             nsim <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Running MCMC burn-in. Please wait....</span></span>
-<span><span class="co">## Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
-<span><span class="co">## Please wait....</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Running MCMC burn-in. Please wait....</span></span>
-<span><span class="co">## Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
-<span><span class="co">## Please wait....</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Running MCMC burn-in. Please wait....</span></span>
-<span><span class="co">## Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
-<span><span class="co">## Please wait....</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Running MCMC burn-in. Please wait....</span></span>
-<span><span class="co">## Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
-<span><span class="co">## Please wait....</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Running MCMC burn-in. Please wait....</span></span>
-<span><span class="co">## Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
-<span><span class="co">## Please wait....</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Running MCMC burn-in. Please wait....</span></span>
-<span><span class="co">## Running 1000 generations of MCMC, sampling every 100 generations.</span></span>
-<span><span class="co">## Please wait....</span></span></code></pre>
-<p>The <code>sim_results</code> object includes per-island ancestral
-state probabilities for each node. As with the tradiational ASR approach
-described in the Getting Started vignette, the <code>sim_results</code>
-object can be used to map <em>in situ</em> speciation events and
-ultimately visualize those events on the phylogeny.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_classified_phylo.html">plot_classified_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>, events <span class="op">=</span> <span class="va">events_simmap</span>, PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span><span class="op">)</span></span></code></pre></div>
+<p><img src="StochasticCharMapping_files/figure-html/plot-1.png" class="r-plt" alt="" width="864"></p>
+</div>
+<div class="section level2">
+<h2 id="checking-node-level-support">Checking node-level support<a class="anchor" aria-label="anchor" href="#checking-node-level-support"></a>
+</h2>
+<p><code>insitu_confidence</code> extracts the per-node per-island
+posterior probabilities directly from the reconstruction object, whether
+from <code>run_geo_asr</code> or <code>simmap_insitu</code>. Nodes with
+low support across all islands are the ones most sensitive to threshold
+choice.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">conf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/insitu_confidence.html">insitu_confidence</a></span><span class="op">(</span>recons <span class="op">=</span> <span class="va">sim_results</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in data.frame(node = as.integer(rownames(lik)), island = island, : NAs</span></span>
+<span><span class="co">#&gt; introduced by coercion</span></span>
+<span><span class="co">#&gt; Warning in data.frame(node = as.integer(rownames(lik)), island = island, : NAs</span></span>
+<span><span class="co">#&gt; introduced by coercion</span></span>
+<span><span class="co">#&gt; Warning in data.frame(node = as.integer(rownames(lik)), island = island, : NAs</span></span>
+<span><span class="co">#&gt; introduced by coercion</span></span>
+<span><span class="co">#&gt; Warning in data.frame(node = as.integer(rownames(lik)), island = island, : NAs</span></span>
+<span><span class="co">#&gt; introduced by coercion</span></span>
+<span><span class="co">#&gt; Warning in data.frame(node = as.integer(rownames(lik)), island = island, : NAs</span></span>
+<span><span class="co">#&gt; introduced by coercion</span></span>
+<span><span class="co">#&gt; Warning in data.frame(node = as.integer(rownames(lik)), island = island, : NAs</span></span>
+<span><span class="co">#&gt; introduced by coercion</span></span>
+<span></span>
+<span><span class="co"># Nodes with high support for any island</span></span>
+<span><span class="va">conf</span><span class="op">[</span><span class="va">conf</span><span class="op">$</span><span class="va">support</span> <span class="op">==</span> <span class="st">"high"</span>, <span class="op">]</span></span>
+<span><span class="co">#&gt;                node           island prob support</span></span>
+<span><span class="co">#&gt; distichus        NA       Cat Island  1.0    high</span></span>
+<span><span class="co">#&gt; 391              39             Cuba  0.9    high</span></span>
+<span><span class="co">#&gt; 401              40             Cuba  0.9    high</span></span>
+<span><span class="co">#&gt; 461              46             Cuba  0.9    high</span></span>
+<span><span class="co">#&gt; 471              47             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; 481              48             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; 491              49             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; 571              57             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; sagrei1          NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; ophiolepis1      NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; ahli1            NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; porcatus1        NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; angusticeps1     NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; paternus1        NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; vanidicus1       NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; alutaceus1       NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; luteogularis1    NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; equestris1       NA             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; 522              52       Hispaniola  0.8    high</span></span>
+<span><span class="co">#&gt; 542              54       Hispaniola  0.9    high</span></span>
+<span><span class="co">#&gt; 552              55       Hispaniola  0.9    high</span></span>
+<span><span class="co">#&gt; 562              56       Hispaniola  0.8    high</span></span>
+<span><span class="co">#&gt; distichus2       NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; brevirostris2    NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; strahmi2         NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; marcanoi2        NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; barahonae2       NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; insolitus2       NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; olssoni2         NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; bahorucoensis2   NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; aliniger2        NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; coelestinus2     NA       Hispaniola  1.0    high</span></span>
+<span><span class="co">#&gt; distichus3       NA Ile de la Tortue  1.0    high</span></span>
+<span><span class="co">#&gt; 364              36          Jamaica  0.9    high</span></span>
+<span><span class="co">#&gt; 374              37          Jamaica  1.0    high</span></span>
+<span><span class="co">#&gt; 384              38          Jamaica  1.0    high</span></span>
+<span><span class="co">#&gt; grahami4         NA          Jamaica  1.0    high</span></span>
+<span><span class="co">#&gt; garmani4         NA          Jamaica  1.0    high</span></span>
+<span><span class="co">#&gt; lineatopus4      NA          Jamaica  1.0    high</span></span>
+<span><span class="co">#&gt; valencienni4     NA          Jamaica  1.0    high</span></span>
+<span><span class="co">#&gt; sagrei4          NA          Jamaica  1.0    high</span></span>
+<span><span class="co">#&gt; 425              42      Puerto Rico  0.9    high</span></span>
+<span><span class="co">#&gt; 435              43      Puerto Rico  1.0    high</span></span>
+<span><span class="co">#&gt; cristatellus5    NA      Puerto Rico  1.0    high</span></span>
+<span><span class="co">#&gt; krugi5           NA      Puerto Rico  1.0    high</span></span>
+<span><span class="co">#&gt; stratulus5       NA      Puerto Rico  1.0    high</span></span>
+<span><span class="co">#&gt; cuvieri5         NA      Puerto Rico  1.0    high</span></span>
+<span><span class="co">#&gt; occultus5        NA      Puerto Rico  1.0    high</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="downstream-analysis">Downstream analysis<a class="anchor" aria-label="anchor" href="#downstream-analysis"></a>
+</h2>
+<p>From this point the workflow is identical to the Getting Started
+vignette. Diversity decomposition, the in-situ speciation index, and
+island ontogeny correction all accept the events table from either
+reconstruction approach.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Use map_insitu_events to estimate locations of in situ speciation events</span></span>
-<span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/map_insitu_events.html">map_insitu_events</a></span><span class="op">(</span>recons <span class="op">=</span> <span class="va">sim_results</span>, phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>, PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">div</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/decompose_diversity.html">decompose_diversity</a></span><span class="op">(</span></span>
+<span>  phy    <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>,</span>
+<span>  events <span class="op">=</span> <span class="va">events_simmap</span>,</span>
+<span>  PAM    <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Visualize the estimated in situ speciation events on the phylogeny</span></span>
-<span><span class="fu"><a href="../reference/plot_classified_phylo.html">plot_classified_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>, events <span class="op">=</span> <span class="va">events</span>, PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="events-1.png" style="width:90.0%" alt="Figure 1. The example Anolis phylogeny with ancestral island states visualized on the nodes."><div class="figcaption">Figure 1. The example <em>Anolis</em> phylogeny
-with ancestral island states visualized on the nodes.</div>
-</div>
-<p>Here, we visualize the colonization and <em>in situ</em> speciation
-history for 30 <em>Anolis</em> species across four islands. As discussed
-in the Getting Started vignette, these events can be further
-contextualized using several functions from <code>insitu</code>. One
-option is the <code><a href="../reference/decompose_diversity.html">insitu::decompose_diversity()</a></code> function, which
-provides users with counts of each type of potential event (<em>in
-situ</em> speciation, export, and import; see the Getting Started
-vignette for more details).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">div</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/decompose_diversity.html">decompose_diversity</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>,</span>
-<span>                           events <span class="op">=</span> <span class="va">map_events</span>,</span>
-<span>                           PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Look at the first 5 rows of the classification data frame</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">div</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##             island n_species n_insitu n_import n_export prop_insitu</span></span>
-<span><span class="co">## 1       Cat Island         1        0        1        0         0.0</span></span>
-<span><span class="co">## 2             Cuba        10       10        0        1         1.0</span></span>
-<span><span class="co">## 3       Hispaniola        10        7        0        2         0.7</span></span>
-<span><span class="co">## 4 Ile de la Tortue         1        0        1        0         0.0</span></span>
-<span><span class="co">## 5          Jamaica         5        4        1        0         0.8</span></span></code></pre>
-</div>
+<span><span class="va">div</span></span>
+<span><span class="co">#&gt;             island n_species n_insitu n_import n_export prop_insitu</span></span>
+<span><span class="co">#&gt; 1       Cat Island         1        0        1        0         0.0</span></span>
+<span><span class="co">#&gt; 2             Cuba        10       10        2        1         1.0</span></span>
+<span><span class="co">#&gt; 3       Hispaniola        10       10        0        6         1.0</span></span>
+<span><span class="co">#&gt; 4 Ile de la Tortue         1        0        1        0         0.0</span></span>
+<span><span class="co">#&gt; 5          Jamaica         5        4        1        0         0.8</span></span>
+<span><span class="co">#&gt; 6      Puerto Rico         5        3        2        0         0.6</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

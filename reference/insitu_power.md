@@ -101,9 +101,3 @@ insitu_power(
 A data frame with one row per simulation replicate and columns `sim`,
 `n_true_insitu`, `n_recovered`, `n_false_neg`, `n_false_pos`,
 `sensitivity`, and `precision`.
-
-## Details
-
-Sensitivity measures the proportion of true in-situ events that the
-pipeline correctly identifies. Precision measures the proportion of
-pipeline in-situ calls that are truly in-situ.

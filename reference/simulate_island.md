@@ -80,7 +80,7 @@ colonize the island system at rate `mainland_colonization_rate`: the
 number of independent colonization events is drawn from a Poisson
 distribution with mean equal to that rate multiplied by the total
 mainland branch length. When only one event is drawn, all island species
-are monophyletic; when multiple events are drawn, the island assemblage
+are monophyletic. When multiple events are drawn, the island assemblage
 is polyphyletic. Once on the island system, lineages disperse between
 islands at rate `inter_island_rate`. Speciation and extinction proceed
 at island-specific rates that may differ from the mainland.
