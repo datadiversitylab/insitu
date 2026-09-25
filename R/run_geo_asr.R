@@ -1,4 +1,4 @@
-#' Runs geographic state ASR (discrete: island; mainland?)
+#' Runs geographic state ASR (discrete: island; mainland)
 #'
 #' @param phy The phylogenetic tree associated with your data
 #' @param PAM A presence-absence matrix reflecting where each species of

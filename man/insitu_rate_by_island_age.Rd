@@ -28,10 +28,8 @@ island formation.}
 }
 }
 \description{
-Modifies \code{\link{insitu_speciation_rate}} to use island formation age
-as the time denominator rather than total root-to-tip path length. This
-gives the rate of in-situ speciation per unit time that the island has
+Gives the rate of in-situ speciation per unit time that the island has
 existed. This approach allows for comparing diversification
-dynamics across islands of different geological ages.Events that predate
+dynamics across islands of different geological ages. Events that predate
 island formation are excluded from the count before computing rates.
 }

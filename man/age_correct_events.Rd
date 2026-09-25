@@ -39,6 +39,5 @@ biologically impossible and represent either errors in the ancestral state
 reconstruction or lineages whose common ancestor actually predates the island.
 These nodes are flagged and optionally removed. This function also computes
 island-age-corrected rates by replacing the full path length denominator
-with the time elapsed since island formation, which is the relevant
-timescale for assessing how rapidly an island has diversified.
+with the time elapsed since island formation.
 }

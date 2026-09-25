@@ -16,7 +16,7 @@ plot_classified_phylo <- function(phy, events, PAM){
   colors <- stats::setNames(grDevices::palette.colors(length(islands), "Okabe-Ito"), islands)
 
   # Plot the basic phylogeny, but add a label offset for the pie charts and
-  #  some extra space for the legend (based on tree depth to make it general)
+  #  some extra space for the legend
   plot(phy,
        main = expression(paste("Island-Level ", italic("in situ"), " Speciation")),
        label.offset = 0.5,
@@ -42,8 +42,6 @@ plot_classified_phylo <- function(phy, events, PAM){
                   adj = c(1.1, -0.4))
 
   # Add pie charts to tip labels to show extant islands
-  # Make sure that the locales are the row names so that they don't get removed
-  #  when the columns are reordered
   rownames(PAM) <- PAM$locale
 
   # Reorder the PAM columns to match tip labels

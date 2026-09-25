@@ -10,7 +10,7 @@
 #' the island system at rate \code{mainland_colonization_rate}: the number of
 #' independent colonization events is drawn from a Poisson distribution with
 #' mean equal to that rate multiplied by the total mainland branch length. When
-#' only one event is drawn, all island species are monophyletic; when multiple
+#' only one event is drawn, all island species are monophyletic. When multiple
 #' events are drawn, the island assemblage is polyphyletic. Once on the island
 #' system, lineages disperse between islands at rate \code{inter_island_rate}.
 #' Speciation and extinction proceed at island-specific rates that may differ
@@ -43,14 +43,14 @@
 #' @export
 simulate_island <- function(n_tips,
                             diversification_rate,
-                            extinction_fraction          = 0,
-                            diversification_rate_island  = NULL,
-                            extinction_fraction_island   = NULL,
+                            extinction_fraction = 0,
+                            diversification_rate_island = NULL,
+                            extinction_fraction_island = NULL,
                             mainland_colonization_rate,
                             inter_island_rate,
-                            n_islands                    = 1,
-                            n_mainland                   = 1,
-                            seed                         = NULL) {
+                            n_islands = 1,
+                            n_mainland = 1,
+                            seed = NULL) {
 
   if (!is.null(seed)) set.seed(seed)
 
@@ -66,7 +66,7 @@ simulate_island <- function(n_tips,
     stop("'extinction_fraction_island' must be between 0 and 1.")
 
   # Derive birth and death rates
-  birth_mland  <- diversification_rate        / (1 - extinction_fraction)
+  birth_mland  <- diversification_rate / (1 - extinction_fraction)
   death_mland  <- birth_mland * extinction_fraction
   birth_island <- diversification_rate_island / (1 - extinction_fraction_island)
   death_island <- birth_island * extinction_fraction_island
@@ -138,7 +138,7 @@ simulate_island <- function(n_tips,
 
   target_depth <- max(ape::node.depth.edgelength(phy_mland))
 
-  # Each colonization group k gets tip labels "spIk_N" — unique prefix per
+  # Each colonization group k gets tip labels "spIk_N", an unique prefix per
   # group allows robust crown identification after bind.tree
   for (k in seq_len(n_col_mainland)) {
     n_isl_k   <- island_tips_per_col[k]
@@ -203,7 +203,7 @@ simulate_island <- function(n_tips,
   all_nodes <- all_nodes[sapply(all_nodes, function(nd)
     sum(phy$edge[, 1] == nd) >= 2L)]
 
-  # --- Inter-island dispersal within each island crown --------------------
+  # Inter-island dispersal within each island crown
   col_nodes      <- island_crowns
   node_to_island <- setNames(
     rep("island_1", length(island_crowns)),
@@ -239,7 +239,7 @@ simulate_island <- function(n_tips,
     node_to_island[as.character(crown)] <- isl_labels[1L]
   }
 
-  # --- Assign each tip to its nearest colonization ancestor ---------------
+  # Assign each tip to its nearest colonization ancestor
   root_nd <- n_species + 1L
 
   col_ancestor <- function(tip_idx) {
@@ -274,7 +274,7 @@ simulate_island <- function(n_tips,
     return(NULL)
   }
 
-  # --- Build PAM -----------------------------------------------------------
+  # Build PAM
   all_islands <- sort(unique(tip_islands))
   locales     <- c(all_islands, "Mainland")
   PAM         <- data.frame(locale = locales, stringsAsFactors = FALSE)
@@ -286,7 +286,7 @@ simulate_island <- function(n_tips,
     PAM[[sp]] <- col
   }
 
-  # --- True in-situ events -------------------------------------------------
+  # True in-situ events
   # A node is in-situ when both descendant clades:
   #   (1) share exactly one island, AND
   #   (2) descend from the same mainland colonization event

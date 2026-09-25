@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_geo_asr.R
 \name{run_geo_asr}
 \alias{run_geo_asr}
-\title{Runs geographic state ASR (discrete: island; mainland?)}
+\title{Runs geographic state ASR (discrete: island; mainland)}
 \usage{
 run_geo_asr(phy, PAM, model = "ER", ...)
 }
@@ -26,5 +26,5 @@ documentation for \code{ape::ace} for more information. Default: ER}
 A list of island-specific ancestral state reconstructions
 }
 \description{
-Runs geographic state ASR (discrete: island; mainland?)
+Runs geographic state ASR (discrete: island; mainland)
 }

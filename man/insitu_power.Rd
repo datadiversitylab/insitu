@@ -72,8 +72,3 @@ recovers the true in-situ events. For each simulation, a tree and PAM
 are generated using \code{\link{simulate_island}}, the full pipeline is
 applied, and recovered events are compared to the known ground truth.
 }
-\details{
-Sensitivity measures the proportion of true in-situ events that the
-pipeline correctly identifies. Precision measures the proportion of
-pipeline in-situ calls that are truly in-situ.
-}

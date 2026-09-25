@@ -6,10 +6,6 @@
 #' are generated using \code{\link{simulate_island}}, the full pipeline is
 #' applied, and recovered events are compared to the known ground truth.
 #'
-#' Sensitivity measures the proportion of true in-situ events that the
-#' pipeline correctly identifies. Precision measures the proportion of
-#' pipeline in-situ calls that are truly in-situ.
-#'
 #' @param n_sim Number of simulation replicates. Default: \code{100}.
 #' @param n_tips Total number of tips per simulated tree.
 #' @param diversification_rate Net diversification rate (birth - death).
@@ -40,20 +36,20 @@
 #'   \code{precision}.
 #'
 #' @export
-insitu_power <- function(n_sim                       = 100,
+insitu_power <- function(n_sim = 100,
                          n_tips,
                          diversification_rate,
-                         extinction_fraction         = 0,
+                         extinction_fraction = 0,
                          diversification_rate_island = NULL,
-                         extinction_fraction_island  = NULL,
+                         extinction_fraction_island = NULL,
                          mainland_colonization_rate,
                          inter_island_rate,
-                         n_islands                   = 1,
-                         n_mainland                  = 1,
-                         threshold                   = 0.5,
-                         model                       = "ER",
-                         use_simmap                  = FALSE,
-                         nsim                        = 10) {
+                         n_islands = 1,
+                         n_mainland = 1,
+                         threshold = 0.5,
+                         model = "ER",
+                         use_simmap = FALSE,
+                         nsim = 10) {
 
   out <- lapply(seq_len(n_sim), function(s) {
     sim <- simulate_island(

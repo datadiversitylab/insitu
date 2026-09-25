@@ -6,8 +6,7 @@
 #' reconstruction or lineages whose common ancestor actually predates the island.
 #' These nodes are flagged and optionally removed. This function also computes
 #' island-age-corrected rates by replacing the full path length denominator
-#' with the time elapsed since island formation, which is the relevant
-#' timescale for assessing how rapidly an island has diversified.
+#' with the time elapsed since island formation.
 #'
 #' @param events The data frame returned by \code{map_insitu_events}.
 #' @param phy The matched phylogenetic tree.
@@ -60,11 +59,9 @@ age_correct_events <- function(events, phy, island_ages,
 
 #' Computes island-age-corrected in-situ speciation rates
 #'
-#' Modifies \code{\link{insitu_speciation_rate}} to use island formation age
-#' as the time denominator rather than total root-to-tip path length. This
-#' gives the rate of in-situ speciation per unit time that the island has
+#' Gives the rate of in-situ speciation per unit time that the island has
 #' existed. This approach allows for comparing diversification
-#' dynamics across islands of different geological ages.Events that predate
+#' dynamics across islands of different geological ages. Events that predate
 #' island formation are excluded from the count before computing rates.
 #'
 #' @param phy The matched phylogenetic tree.
