@@ -26,7 +26,6 @@ This vignette will walk through the following steps in the `insitu` pipeline:
 * Data Preparation
 * Classifying Events and Diversity Decomposition
 * Rates, Indices, and Support
-* Adaptive Radiation Bursts
 
 
 ## Data Preparation
@@ -118,42 +117,10 @@ The results of the `insitu::decompose_diversity()` function give us a clearer pi
 plot_diversity_decomposition(div)
 ```
 
-The stacked bar plot above accentuates the importance of *in situ* speciation in contributing to species richness for Cuba, Hispaniola, Jamaica, and Puerto Rico, while also highlighting import and export events. We can compare these events statistically through the use of the `insitu::compare_islands()` function, which runs chi-squared and Kruskal-Wallis tests to determine whether event counts, *in situ* rates, and colonization rates differ across islands.
-
-```{r compare_div, warning = FALSE}
-# Determine whether:
-# - In situ speciation, import, and export counts differ across islands
-# - In situ and colonization rates differ across islands
-comp_div <- compare_islands(div)
-```
-
-The `comp_div` object created using the `insitu::compare_islands()` function is a list of three elements: `counts_test`, `insitu_rate_test`, and `colonization_rate_test`. Each one contains the summary output for each test: 
-- `counts_test` is a chi-squared test that determines whether *in situ* speciation, import, and export counts differ across islands.
-- `insitu_rate_test` is a Kruskal-Wallis test that determines whether *in situ* speciation rates differ across islands.
-- `colonization_rate_test` is a Kruskal-Wallis test that determines whether colonization rates differ across islands.
-
-The results for this example are printed below:
-
-```{r print_compare}
-comp_div
-
-```
-
-The p-values for each test indicate that the event counts in general differ between islands, but the *in situ* speciation and colonization rates are not statistically significantly different between islands.
+The stacked bar plot above accentuates the importance of *in situ* speciation in contributing to species richness for Cuba, Hispaniola, Jamaica, and Puerto Rico, while also highlighting import and export events.
 
 ## Rates, Indices, and Support
 Up to this point, we have focused on event classification and visualization. In this section, we will cover functionality in the `insitu` package that allows for the calculation of helpful rates and indices that further contextualize the emergence of biodiversity on the islands of interest.
-
-### Determine Colonization Rates
-Species richness results from the interplay of speciation, extinction, and dispersal. Determining the rate at which lineages colonize islands helps provide a clearer picture of the drivers of species richness. The `insitu::colonization_rate()` function determines how many colonization events each species is associated with and provides a colonization rate associated with that species' lineage.
-
-```{r col-rates}
-# Colonization rate (how many times each species has colonized an island)
-colonization_rate(phy = matched$phy, events = map_events)
-
-```
-
-Here, we can see that only *Anolis sagrei* and *Anolis distichus* were involved in colonization events.
 
 ### Calculate the *in situ* Speciation Index
 In an effort to standardize comparisons across islands to determine the relative importance of *in situ* speciation events in contributing to species richness, the `insitu` package includes a function to calculate the `isci` index. This index represents the number of *in situ* speciation events on an island divided by the total branch length of the island's subtree.
