@@ -1,0 +1,128 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Version to release"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+
+jobs:
+  release:
+    # Releases are only made from the default branch
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+
+      # Sets the release version in DESCRIPTION and renames the development section of NEWS.md
+      - name: Bump version
+        id: bump
+        shell: Rscript {0}
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          pkg <- read.dcf("DESCRIPTION", fields = "Package")[1, 1]
+          old <- read.dcf("DESCRIPTION", fields = "Version")[1, 1]
+          v <- as.integer(strsplit(old, ".", fixed = TRUE)[[1]][1:3])
+          v[is.na(v)] <- 0L
+          v <- switch(Sys.getenv("BUMP"),
+            major = c(v[1] + 1, 0, 0),
+            minor = c(v[1], v[2] + 1, 0),
+            patch = c(v[1], v[2], v[3] + 1)
+          )
+          new <- paste(v, collapse = ".")
+
+          desc <- readLines("DESCRIPTION")
+          desc <- sub("^Version:.*", paste("Version:", new), desc)
+          writeLines(desc, "DESCRIPTION")
+
+          news <- readLines("NEWS.md")
+          dev <- grep(paste0("^# ", pkg, " \\(development version\\)"), news)
+          if (length(dev) == 0) {
+            stop("NEWS.md needs a '# ", pkg, " (development version)' section")
+          }
+          news[dev[1]] <- paste("#", pkg, new)
+          writeLines(news, "NEWS.md")
+
+          cat("package=", pkg, "\n", sep = "", file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
+          cat("version=", new, "\n", sep = "", file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
+
+      - name: Commit and tag release
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Release $VERSION"
+          git tag "v$VERSION"
+          git push origin HEAD
+          git push origin "v$VERSION"
+
+      - name: Build source package
+        run: R CMD build .
+
+      # Release notes are the newest section of NEWS.md, without its heading
+      - name: Create GitHub release
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          awk '/^# /{n++} n==1' NEWS.md | tail -n +2 > notes.md
+          gh release create "v$VERSION" *.tar.gz \
+            --title "v$VERSION" \
+            --notes-file notes.md
+
+      # Moves the repo back to a development version so new work is not mistaken for the release
+      - name: Start development version
+        shell: Rscript {0}
+        env:
+          PKG: ${{ steps.bump.outputs.package }}
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          dev <- paste0(Sys.getenv("VERSION"), ".9000")
+          desc <- readLines("DESCRIPTION")
+          desc <- sub("^Version:.*", paste("Version:", dev), desc)
+          writeLines(desc, "DESCRIPTION")
+
+          news <- readLines("NEWS.md")
+          news <- c(paste("#", Sys.getenv("PKG"), "(development version)"), "", news)
+          writeLines(news, "NEWS.md")
+
+      - name: Commit development version
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          rm -f *.tar.gz notes.md
+          git commit -am "Start development version $VERSION.9000"
+          git push origin HEAD
