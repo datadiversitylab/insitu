@@ -1,6 +1,6 @@
 # Changelog
 
-## insitu 0.1.0
+## insitu (development version)
 
 - Initial CRAN submission.
 - Island colors fixed when n\>8
