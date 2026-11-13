@@ -67,7 +67,9 @@ occurred on.
 plot_simulated_island(sim)
 ```
 
-![](Simulations_files/figure-html/plot_sim-1.png)
+![plot of chunk plot_sim](insitu-plot_sim-1.png)
+
+plot of chunk plot_sim
 
 Tips are colored by island, grey for mainland. Filled circles mark the
 true in-situ nodes from `true_events`.

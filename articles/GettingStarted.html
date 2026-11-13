@@ -134,17 +134,17 @@ species included in Patton et al. (2021).</p>
 <span></span>
 <span><span class="co"># Ensure that species represented in both the tree and data are the same</span></span>
 <span><span class="va">matched</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/match_island_phylo.html">match_island_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">tree</span>, locs <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Species dropped from the tree because they were not in the data: transversalis and heterodermus</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Species dropped from the data because they were not in the tree: loysiana</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Matching complete! Here are the first 5 locales in your data:</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
+<span><span class="co">#&gt; ℹ Species dropped from the tree because they were not in the data: transversalis and heterodermus</span></span>
+<span><span class="co">#&gt; ℹ Species dropped from the data because they were not in the tree: loysiana</span></span>
+<span><span class="co">#&gt; ℹ Matching complete! Here are the first 5 locales in your data:</span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 3</span></span>
 <span><span class="co">#&gt;   locale           species_list                                         richness</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Cat Island       distichus                                                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Cuba             luteogularis, equestris, alutaceus, vanidicus, porc…       10</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Hispaniola       coelestinus, aliniger, bahorucoensis, olssoni, inso…       10</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Ile de la Tortue distichus                                                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Jamaica          valencienni, lineatopus, garmani, grahami, sagrei           5</span></span></code></pre></div>
+<span><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;                                                   &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1 Cat Island       distichus                                                   1</span></span>
+<span><span class="co">#&gt; 2 Cuba             luteogularis, equestris, alutaceus, vanidicus, porc…       10</span></span>
+<span><span class="co">#&gt; 3 Hispaniola       coelestinus, aliniger, bahorucoensis, olssoni, inso…       10</span></span>
+<span><span class="co">#&gt; 4 Ile de la Tortue distichus                                                   1</span></span>
+<span><span class="co">#&gt; 5 Jamaica          valencienni, lineatopus, garmani, grahami, sagrei           5</span></span></code></pre></div>
 <p>The <code><a href="../reference/match_island_phylo.html">insitu::match_island_phylo()</a></code> function removes
 species that are not included in both the tree and the data, and it
 prints out the names of species removed from each. It also prints out
@@ -250,7 +250,9 @@ occurred.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/plot_classified_phylo.html">plot_classified_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>, events <span class="op">=</span> <span class="va">map_events</span>, PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span><span class="op">)</span></span></code></pre></div>
-<p><img src="GettingStarted_files/figure-html/plot_phylo-1.png" class="r-plt" alt="" width="768"></p>
+<div class="float">
+<img src="insitu-plot_phylo-1.png" alt="plot of chunk plot_phylo"><div class="figcaption">plot of chunk plot_phylo</div>
+</div>
 <p>This annotated phylogeny helps visualize how these <em>Anolis</em>
 species diversified across Cuba, Hispaniola, Jamaica, and Puerto
 Rico.</p>
@@ -292,7 +294,9 @@ function.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize diversity decomposition per island in a stacked bar chart</span></span>
 <span><span class="fu"><a href="../reference/plot_diversity_decomposition.html">plot_diversity_decomposition</a></span><span class="op">(</span><span class="va">div</span><span class="op">)</span></span></code></pre></div>
-<p><img src="GettingStarted_files/figure-html/plot_div-1.png" class="r-plt" alt="" width="672"></p>
+<div class="float">
+<img src="insitu-plot_div-1.png" alt="plot of chunk plot_div"><div class="figcaption">plot of chunk plot_div</div>
+</div>
 <p>The stacked bar plot above accentuates the importance of <em>in
 situ</em> speciation in contributing to species richness for Cuba,
 Hispaniola, Jamaica, and Puerto Rico, while also highlighting import and
@@ -440,10 +444,10 @@ depending on the age of the islands</p>
 <span><span class="co">#&gt; 6    38     Jamaica           0.9998792396    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 7    39        Cuba           0.9119735154    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 8    40        Cuba           0.9958979894    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 9    42 Puerto Rico           0.9053890758    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 9    42 Puerto Rico           0.9053890759    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 10   43 Puerto Rico           0.9741656727    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 11   44  Hispaniola           0.7078835948    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 12   45  Hispaniola           0.8106870642    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 12   45  Hispaniola           0.8106870641    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 13   46        Cuba           0.9407811473    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 14   47        Cuba           0.9861511839    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 15   48        Cuba           0.9996846026    TRUE       &lt;NA&gt;             &lt;NA&gt;</span></span>
@@ -498,7 +502,9 @@ above.</p>
 <span></span>
 <span><span class="co"># Plot phylogeny with newly filtered events</span></span>
 <span><span class="fu"><a href="../reference/plot_classified_phylo.html">plot_classified_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>, events <span class="op">=</span> <span class="va">new_events</span>, PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span><span class="op">)</span></span></code></pre></div>
-<p><img src="GettingStarted_files/figure-html/ontogeny2-1.png" class="r-plt" alt="" width="700"></p>
+<div class="float">
+<img src="insitu-ontogeny2-1.png" alt="plot of chunk ontogeny2"><div class="figcaption">plot of chunk ontogeny2</div>
+</div>
 <p>We can also incorporate island age into the calculation of
 <code>isci</code>, the <em>in situ</em> speciation rate index. The
 <code><a href="../reference/insitu_rate_by_island_age.html">insitu::insitu_rate_by_island_age()</a></code> function uses the

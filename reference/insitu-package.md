@@ -15,8 +15,10 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Kristen Martinet <kmartinet@arizona.edu>
+**Maintainer**: Kristen Martinet <kmartinet@outlook.com>
+([ORCID](https://orcid.org/0000-0002-3905-9507))
 
 Authors:
 
-- Cristian Román-Palacios <cromanpa@arizona.edu> \[contributor\]
+- Cristian Román-Palacios <cromanpa@arizona.edu>
+  ([ORCID](https://orcid.org/0000-0003-1696-4886))

@@ -102,17 +102,17 @@ working through them in order you can skip this step.</p>
 <span></span>
 <span><span class="va">tree</span>    <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_phylo.html">prep_phylo</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
 <span><span class="va">matched</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/match_island_phylo.html">match_island_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">tree</span>, locs <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Species dropped from the tree because they were not in the data: transversalis and heterodermus</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Species dropped from the data because they were not in the tree: loysiana</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Matching complete! Here are the first 5 locales in your data:</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
+<span><span class="co">#&gt; ℹ Species dropped from the tree because they were not in the data: transversalis and heterodermus</span></span>
+<span><span class="co">#&gt; ℹ Species dropped from the data because they were not in the tree: loysiana</span></span>
+<span><span class="co">#&gt; ℹ Matching complete! Here are the first 5 locales in your data:</span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 3</span></span>
 <span><span class="co">#&gt;   locale           species_list                                         richness</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Cat Island       distichus                                                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Cuba             luteogularis, equestris, alutaceus, vanidicus, porc…       10</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Hispaniola       coelestinus, aliniger, bahorucoensis, olssoni, inso…       10</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Ile de la Tortue distichus                                                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Jamaica          valencienni, lineatopus, garmani, grahami, sagrei           5</span></span></code></pre></div>
+<span><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;                                                   &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1 Cat Island       distichus                                                   1</span></span>
+<span><span class="co">#&gt; 2 Cuba             luteogularis, equestris, alutaceus, vanidicus, porc…       10</span></span>
+<span><span class="co">#&gt; 3 Hispaniola       coelestinus, aliniger, bahorucoensis, olssoni, inso…       10</span></span>
+<span><span class="co">#&gt; 4 Ile de la Tortue distichus                                                   1</span></span>
+<span><span class="co">#&gt; 5 Jamaica          valencienni, lineatopus, garmani, grahami, sagrei           5</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="running-stochastic-character-mapping">Running stochastic character mapping<a class="anchor" aria-label="anchor" href="#running-stochastic-character-mapping"></a>
@@ -190,10 +190,10 @@ result directly to <code>map_insitu_events</code>.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">events_simmap</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   node     island ancestor_presence_prob in_situ export import</span></span>
-<span><span class="co">#&gt; 1   32       Cuba                    0.0   FALSE   &lt;NA&gt;   &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2   33 Hispaniola                    0.5    TRUE   &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1   32       Cuba                    0.1   FALSE   &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2   33 Hispaniola                    0.3   FALSE   &lt;NA&gt;   &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 3   35    Jamaica                    0.0   FALSE   &lt;NA&gt;   &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4   36    Jamaica                    0.9    TRUE   &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4   36    Jamaica                    1.0    TRUE   &lt;NA&gt;   &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 5   37    Jamaica                    1.0    TRUE   &lt;NA&gt;   &lt;NA&gt;</span></span></code></pre></div>
 <p>Comparing the simmap classification to the ML classification from
 <code>run_geo_asr</code> is a quick way to assess whether the two
@@ -212,7 +212,7 @@ inspection using <code>insitu_confidence</code>.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"In-situ events (ML):     "</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">events_ml</span><span class="op">$</span><span class="va">in_situ</span>    <span class="op">==</span> <span class="cn">TRUE</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; In-situ events (ML):      16</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"In-situ events (simmap): "</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">events_simmap</span><span class="op">$</span><span class="va">in_situ</span> <span class="op">==</span> <span class="cn">TRUE</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; In-situ events (simmap):  19</span></span></code></pre></div>
+<span><span class="co">#&gt; In-situ events (simmap):  17</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualizing-the-simmap-classification">Visualizing the simmap classification<a class="anchor" aria-label="anchor" href="#visualizing-the-simmap-classification"></a>
@@ -223,7 +223,9 @@ will show visually in the same way, but a wider ribbon of support can be
 inspected more directly with <code>insitu_confidence</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_classified_phylo.html">plot_classified_phylo</a></span><span class="op">(</span>phy <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">phy</span>, events <span class="op">=</span> <span class="va">events_simmap</span>, PAM <span class="op">=</span> <span class="va">matched</span><span class="op">$</span><span class="va">PAM</span><span class="op">)</span></span></code></pre></div>
-<p><img src="StochasticCharMapping_files/figure-html/plot-1.png" class="r-plt" alt="" width="864"></p>
+<div class="float">
+<img src="insitu-plot-1.png" alt="plot of chunk plot"><div class="figcaption">plot of chunk plot</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="checking-node-level-support">Checking node-level support<a class="anchor" aria-label="anchor" href="#checking-node-level-support"></a>
@@ -252,13 +254,12 @@ choice.</p>
 <span><span class="va">conf</span><span class="op">[</span><span class="va">conf</span><span class="op">$</span><span class="va">support</span> <span class="op">==</span> <span class="st">"high"</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt;                node           island prob support</span></span>
 <span><span class="co">#&gt; distichus        NA       Cat Island  1.0    high</span></span>
-<span><span class="co">#&gt; 391              39             Cuba  0.9    high</span></span>
-<span><span class="co">#&gt; 401              40             Cuba  0.9    high</span></span>
-<span><span class="co">#&gt; 461              46             Cuba  0.9    high</span></span>
+<span><span class="co">#&gt; 401              40             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; 461              46             Cuba  1.0    high</span></span>
 <span><span class="co">#&gt; 471              47             Cuba  1.0    high</span></span>
 <span><span class="co">#&gt; 481              48             Cuba  1.0    high</span></span>
 <span><span class="co">#&gt; 491              49             Cuba  1.0    high</span></span>
-<span><span class="co">#&gt; 571              57             Cuba  1.0    high</span></span>
+<span><span class="co">#&gt; 571              57             Cuba  0.9    high</span></span>
 <span><span class="co">#&gt; sagrei1          NA             Cuba  1.0    high</span></span>
 <span><span class="co">#&gt; ophiolepis1      NA             Cuba  1.0    high</span></span>
 <span><span class="co">#&gt; ahli1            NA             Cuba  1.0    high</span></span>
@@ -269,9 +270,6 @@ choice.</p>
 <span><span class="co">#&gt; alutaceus1       NA             Cuba  1.0    high</span></span>
 <span><span class="co">#&gt; luteogularis1    NA             Cuba  1.0    high</span></span>
 <span><span class="co">#&gt; equestris1       NA             Cuba  1.0    high</span></span>
-<span><span class="co">#&gt; 522              52       Hispaniola  0.8    high</span></span>
-<span><span class="co">#&gt; 542              54       Hispaniola  0.9    high</span></span>
-<span><span class="co">#&gt; 552              55       Hispaniola  0.9    high</span></span>
 <span><span class="co">#&gt; 562              56       Hispaniola  0.8    high</span></span>
 <span><span class="co">#&gt; distichus2       NA       Hispaniola  1.0    high</span></span>
 <span><span class="co">#&gt; brevirostris2    NA       Hispaniola  1.0    high</span></span>
@@ -284,7 +282,7 @@ choice.</p>
 <span><span class="co">#&gt; aliniger2        NA       Hispaniola  1.0    high</span></span>
 <span><span class="co">#&gt; coelestinus2     NA       Hispaniola  1.0    high</span></span>
 <span><span class="co">#&gt; distichus3       NA Ile de la Tortue  1.0    high</span></span>
-<span><span class="co">#&gt; 364              36          Jamaica  0.9    high</span></span>
+<span><span class="co">#&gt; 364              36          Jamaica  1.0    high</span></span>
 <span><span class="co">#&gt; 374              37          Jamaica  1.0    high</span></span>
 <span><span class="co">#&gt; 384              38          Jamaica  1.0    high</span></span>
 <span><span class="co">#&gt; grahami4         NA          Jamaica  1.0    high</span></span>
@@ -292,7 +290,7 @@ choice.</p>
 <span><span class="co">#&gt; lineatopus4      NA          Jamaica  1.0    high</span></span>
 <span><span class="co">#&gt; valencienni4     NA          Jamaica  1.0    high</span></span>
 <span><span class="co">#&gt; sagrei4          NA          Jamaica  1.0    high</span></span>
-<span><span class="co">#&gt; 425              42      Puerto Rico  0.9    high</span></span>
+<span><span class="co">#&gt; 425              42      Puerto Rico  1.0    high</span></span>
 <span><span class="co">#&gt; 435              43      Puerto Rico  1.0    high</span></span>
 <span><span class="co">#&gt; cristatellus5    NA      Puerto Rico  1.0    high</span></span>
 <span><span class="co">#&gt; krugi5           NA      Puerto Rico  1.0    high</span></span>
@@ -317,11 +315,11 @@ reconstruction approach.</p>
 <span><span class="va">div</span></span>
 <span><span class="co">#&gt;             island n_species n_insitu n_import n_export prop_insitu</span></span>
 <span><span class="co">#&gt; 1       Cat Island         1        0        1        0         0.0</span></span>
-<span><span class="co">#&gt; 2             Cuba        10       10        2        1         1.0</span></span>
-<span><span class="co">#&gt; 3       Hispaniola        10       10        0        6         1.0</span></span>
+<span><span class="co">#&gt; 2             Cuba        10       10        1        1         1.0</span></span>
+<span><span class="co">#&gt; 3       Hispaniola        10        9        0        6         0.9</span></span>
 <span><span class="co">#&gt; 4 Ile de la Tortue         1        0        1        0         0.0</span></span>
 <span><span class="co">#&gt; 5          Jamaica         5        4        1        0         0.8</span></span>
-<span><span class="co">#&gt; 6      Puerto Rico         5        3        2        0         0.6</span></span></code></pre></div>
+<span><span class="co">#&gt; 6      Puerto Rico         5        3        3        0         0.6</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -128,10 +128,10 @@ events_simmap <- map_insitu_events(
 
 head(events_simmap, n = 5)
 #>   node     island ancestor_presence_prob in_situ export import
-#> 1   32       Cuba                    0.0   FALSE   <NA>   <NA>
-#> 2   33 Hispaniola                    0.5    TRUE   <NA>   <NA>
+#> 1   32       Cuba                    0.1   FALSE   <NA>   <NA>
+#> 2   33 Hispaniola                    0.3   FALSE   <NA>   <NA>
 #> 3   35    Jamaica                    0.0   FALSE   <NA>   <NA>
-#> 4   36    Jamaica                    0.9    TRUE   <NA>   <NA>
+#> 4   36    Jamaica                    1.0    TRUE   <NA>   <NA>
 #> 5   37    Jamaica                    1.0    TRUE   <NA>   <NA>
 ```
 
@@ -154,7 +154,7 @@ events_ml <- map_insitu_events(
 cat("In-situ events (ML):     ", sum(events_ml$in_situ    == TRUE, na.rm = TRUE), "\n")
 #> In-situ events (ML):      16
 cat("In-situ events (simmap): ", sum(events_simmap$in_situ == TRUE, na.rm = TRUE), "\n")
-#> In-situ events (simmap):  19
+#> In-situ events (simmap):  17
 ```
 
 ## Visualizing the simmap classification
@@ -169,7 +169,9 @@ more directly with `insitu_confidence`.
 plot_classified_phylo(phy = matched$phy, events = events_simmap, PAM = matched$PAM)
 ```
 
-![](StochasticCharMapping_files/figure-html/plot-1.png)
+![plot of chunk plot](insitu-plot-1.png)
+
+plot of chunk plot
 
 ## Checking node-level support
 
@@ -198,13 +200,12 @@ conf <- insitu_confidence(recons = sim_results)
 conf[conf$support == "high", ]
 #>                node           island prob support
 #> distichus        NA       Cat Island  1.0    high
-#> 391              39             Cuba  0.9    high
-#> 401              40             Cuba  0.9    high
-#> 461              46             Cuba  0.9    high
+#> 401              40             Cuba  1.0    high
+#> 461              46             Cuba  1.0    high
 #> 471              47             Cuba  1.0    high
 #> 481              48             Cuba  1.0    high
 #> 491              49             Cuba  1.0    high
-#> 571              57             Cuba  1.0    high
+#> 571              57             Cuba  0.9    high
 #> sagrei1          NA             Cuba  1.0    high
 #> ophiolepis1      NA             Cuba  1.0    high
 #> ahli1            NA             Cuba  1.0    high
@@ -215,9 +216,6 @@ conf[conf$support == "high", ]
 #> alutaceus1       NA             Cuba  1.0    high
 #> luteogularis1    NA             Cuba  1.0    high
 #> equestris1       NA             Cuba  1.0    high
-#> 522              52       Hispaniola  0.8    high
-#> 542              54       Hispaniola  0.9    high
-#> 552              55       Hispaniola  0.9    high
 #> 562              56       Hispaniola  0.8    high
 #> distichus2       NA       Hispaniola  1.0    high
 #> brevirostris2    NA       Hispaniola  1.0    high
@@ -230,7 +228,7 @@ conf[conf$support == "high", ]
 #> aliniger2        NA       Hispaniola  1.0    high
 #> coelestinus2     NA       Hispaniola  1.0    high
 #> distichus3       NA Ile de la Tortue  1.0    high
-#> 364              36          Jamaica  0.9    high
+#> 364              36          Jamaica  1.0    high
 #> 374              37          Jamaica  1.0    high
 #> 384              38          Jamaica  1.0    high
 #> grahami4         NA          Jamaica  1.0    high
@@ -238,7 +236,7 @@ conf[conf$support == "high", ]
 #> lineatopus4      NA          Jamaica  1.0    high
 #> valencienni4     NA          Jamaica  1.0    high
 #> sagrei4          NA          Jamaica  1.0    high
-#> 425              42      Puerto Rico  0.9    high
+#> 425              42      Puerto Rico  1.0    high
 #> 435              43      Puerto Rico  1.0    high
 #> cristatellus5    NA      Puerto Rico  1.0    high
 #> krugi5           NA      Puerto Rico  1.0    high
@@ -265,9 +263,9 @@ div <- decompose_diversity(
 div
 #>             island n_species n_insitu n_import n_export prop_insitu
 #> 1       Cat Island         1        0        1        0         0.0
-#> 2             Cuba        10       10        2        1         1.0
-#> 3       Hispaniola        10       10        0        6         1.0
+#> 2             Cuba        10       10        1        1         1.0
+#> 3       Hispaniola        10        9        0        6         0.9
 #> 4 Ile de la Tortue         1        0        1        0         0.0
 #> 5          Jamaica         5        4        1        0         0.8
-#> 6      Puerto Rico         5        3        2        0         0.6
+#> 6      Puerto Rico         5        3        3        0         0.6
 ```

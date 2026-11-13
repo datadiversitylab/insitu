@@ -196,7 +196,9 @@ speciation event occurred.
 plot_classified_phylo(phy = matched$phy, events = map_events, PAM = matched$PAM)
 ```
 
-![](GettingStarted_files/figure-html/plot_phylo-1.png)
+![plot of chunk plot_phylo](insitu-plot_phylo-1.png)
+
+plot of chunk plot_phylo
 
 This annotated phylogeny helps visualize how these *Anolis* species
 diversified across Cuba, Hispaniola, Jamaica, and Puerto Rico.
@@ -249,7 +251,9 @@ function.
 plot_diversity_decomposition(div)
 ```
 
-![](GettingStarted_files/figure-html/plot_div-1.png)
+![plot of chunk plot_div](insitu-plot_div-1.png)
+
+plot of chunk plot_div
 
 The stacked bar plot above accentuates the importance of *in situ*
 speciation in contributing to species richness for Cuba, Hispaniola,
@@ -404,10 +408,10 @@ age_correct_events(events = map_events,
 #> 6    38     Jamaica           0.9998792396    TRUE       <NA>             <NA>
 #> 7    39        Cuba           0.9119735154    TRUE       <NA>             <NA>
 #> 8    40        Cuba           0.9958979894    TRUE       <NA>             <NA>
-#> 9    42 Puerto Rico           0.9053890758    TRUE       <NA>             <NA>
+#> 9    42 Puerto Rico           0.9053890759    TRUE       <NA>             <NA>
 #> 10   43 Puerto Rico           0.9741656727    TRUE       <NA>             <NA>
 #> 11   44  Hispaniola           0.7078835948    TRUE       <NA>             <NA>
-#> 12   45  Hispaniola           0.8106870642    TRUE       <NA>             <NA>
+#> 12   45  Hispaniola           0.8106870641    TRUE       <NA>             <NA>
 #> 13   46        Cuba           0.9407811473    TRUE       <NA>             <NA>
 #> 14   47        Cuba           0.9861511839    TRUE       <NA>             <NA>
 #> 15   48        Cuba           0.9996846026    TRUE       <NA>             <NA>
@@ -467,7 +471,9 @@ new_events <- age_correct_events(events = map_events,
 plot_classified_phylo(phy = matched$phy, events = new_events, PAM = matched$PAM)
 ```
 
-![](GettingStarted_files/figure-html/ontogeny2-1.png)
+![plot of chunk ontogeny2](insitu-ontogeny2-1.png)
+
+plot of chunk ontogeny2
 
 We can also incorporate island age into the calculation of `isci`, the
 *in situ* speciation rate index. The

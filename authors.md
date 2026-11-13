@@ -3,8 +3,10 @@
 ## Authors
 
 - **Kristen Martinet**. Author, maintainer.
+  [](https://orcid.org/0000-0002-3905-9507)
 
-- **Cristian Román-Palacios**. Author, contributor.
+- **Cristian Román-Palacios**. Author.
+  [](https://orcid.org/0000-0003-1696-4886)
 
 ## Citation
 
