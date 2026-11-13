@@ -15,12 +15,15 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/GettingStarted.html">Get started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/GettingStarted.html">Getting Started with insitu</a></li>
-    <li><a class="dropdown-item" href="../articles/Simulations.html">Simulating island radiations and testing pipeline performance</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Going further</h6></li>
     <li><a class="dropdown-item" href="../articles/StochasticCharMapping.html">Stochastic character mapping with insitu</a></li>
+    <li><a class="dropdown-item" href="../articles/Simulations.html">Simulating island radiations and testing pipeline performance</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -36,7 +39,30 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="preparing-data">Preparing data<a class="anchor" aria-label="anchor" href="#preparing-data"></a></h2>
+
+      <div class="section-desc"><p>Match phylogenies with locality data.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="prep_phylo.html">prep_phylo()</a></code>
+
+        </dt>
+        <dd>Prepares a phylogeny for use in the insitu pipeline</dd>
+
+        <dt>
+
+          <code><a href="match_island_phylo.html">match_island_phylo()</a></code>
+
+        </dt>
+        <dd>Imports and validates dated phylogenies with associated island occurrence data</dd>
+      </dl></div><div class="section level2">
+      <h2 id="ancestral-state-reconstruction">Ancestral state reconstruction<a class="anchor" aria-label="anchor" href="#ancestral-state-reconstruction"></a></h2>
 
 
 
@@ -47,17 +73,33 @@
 
       <dl><dt>
 
-          <code><a href="age_correct_events.html">age_correct_events()</a></code>
+          <code><a href="run_geo_asr.html">run_geo_asr()</a></code>
 
         </dt>
-        <dd>Flags and filters in-situ events relative to island formation age</dd>
+        <dd>Runs geographic state ASR (discrete: island; mainland)</dd>
 
         <dt>
 
-          <code><a href="decompose_diversity.html">decompose_diversity()</a></code>
+          <code><a href="simmap_insitu.html">simmap_insitu()</a></code>
 
         </dt>
-        <dd>Partition island species richness into in-situ, import, and export components</dd>
+        <dd>Uses stochastic character mapping to propagate ASR uncertainty through speciation classifications. Posterior distribution of in-situ event counts</dd>
+      </dl></div><div class="section level2">
+      <h2 id="classifying-events">Classifying events<a class="anchor" aria-label="anchor" href="#classifying-events"></a></h2>
+
+      <div class="section-desc"><p>Classify nodes as in situ speciation, colonization, or dispersal.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="map_insitu_events.html">map_insitu_events()</a></code>
+
+        </dt>
+        <dd>Applies decision rules to reconstructed nodes to classify each speciation event as in-situ, colonization, or ambiguous</dd>
 
         <dt>
 
@@ -68,17 +110,26 @@
 
         <dt>
 
-          <code><a href="insitu_power.html">insitu_power()</a></code>
+          <code><a href="age_correct_events.html">age_correct_events()</a></code>
 
         </dt>
-        <dd>Power analysis for in-situ speciation event recovery</dd>
+        <dd>Flags and filters in-situ events relative to island formation age</dd>
+      </dl></div><div class="section level2">
+      <h2 id="diversity-decomposition-and-rates">Diversity decomposition and rates<a class="anchor" aria-label="anchor" href="#diversity-decomposition-and-rates"></a></h2>
 
-        <dt>
 
-          <code><a href="insitu_rate_by_island_age.html">insitu_rate_by_island_age()</a></code>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="decompose_diversity.html">decompose_diversity()</a></code>
 
         </dt>
-        <dd>Computes island-age-corrected in-situ speciation rates</dd>
+        <dd>Partition island species richness into in-situ, import, and export components</dd>
 
         <dt>
 
@@ -89,19 +140,44 @@
 
         <dt>
 
-          <code><a href="map_insitu_events.html">map_insitu_events()</a></code>
+          <code><a href="insitu_rate_by_island_age.html">insitu_rate_by_island_age()</a></code>
 
         </dt>
-        <dd>Applies decision rules to reconstructed nodes to classify each speciation event as in-situ, colonization, or ambiguous</dd>
+        <dd>Computes island-age-corrected in-situ speciation rates</dd>
+      </dl></div><div class="section level2">
+      <h2 id="simulation-and-power">Simulation and power<a class="anchor" aria-label="anchor" href="#simulation-and-power"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="simulate_island.html">simulate_island()</a></code>
+
+        </dt>
+        <dd>Simulates island assemblages under known colonization, speciation, and extinction parameters</dd>
 
         <dt>
 
-          <code><a href="match_island_phylo.html">match_island_phylo()</a></code>
+          <code><a href="insitu_power.html">insitu_power()</a></code>
 
         </dt>
-        <dd>Imports and validates dated phylogenies with associated island occurrence data</dd>
+        <dd>Power analysis for in-situ speciation event recovery</dd>
+      </dl></div><div class="section level2">
+      <h2 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a></h2>
 
-        <dt>
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="plot_classified_phylo.html">plot_classified_phylo()</a></code>
 
@@ -121,36 +197,9 @@
 
         </dt>
         <dd>Plots a simulated island assemblage with tips colored by island and true in-situ nodes marked</dd>
-
-        <dt>
-
-          <code><a href="prep_phylo.html">prep_phylo()</a></code>
-
-        </dt>
-        <dd>Prepares a phylogeny for use in the insitu pipeline</dd>
-
-        <dt>
-
-          <code><a href="run_geo_asr.html">run_geo_asr()</a></code>
-
-        </dt>
-        <dd>Runs geographic state ASR (discrete: island; mainland)</dd>
-
-        <dt>
-
-          <code><a href="simmap_insitu.html">simmap_insitu()</a></code>
-
-        </dt>
-        <dd>Uses stochastic character mapping to propagate ASR uncertainty through speciation classifications. Posterior distribution of in-situ event counts</dd>
-
-        <dt>
-
-          <code><a href="simulate_island.html">simulate_island()</a></code>
-
-        </dt>
-        <dd>Simulates island assemblages under known colonization, speciation, and extinction parameters</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
