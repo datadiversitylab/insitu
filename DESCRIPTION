@@ -1,6 +1,6 @@
 Package: insitu
 Title: Estimating in situ Speciation on Island Systems
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Kristen", "Martinet", , "kmartinet@outlook.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3905-9507")),
