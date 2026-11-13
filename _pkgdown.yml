@@ -1,4 +1,55 @@
 url: https://datadiversitylab.github.io/insitu/
+
 template:
   bootstrap: 5
 
+navbar:
+  structure:
+    left: [getstarted, reference, articles, news]
+    right: [search, github]
+  components:
+    getstarted:
+      text: Get started
+      href: articles/GettingStarted.html
+
+articles:
+- title: Get started
+  navbar: ~
+  contents:
+  - GettingStarted
+- title: Going further
+  navbar: Going further
+  contents:
+  - StochasticCharMapping
+  - Simulations
+
+reference:
+- title: Preparing data
+  desc: Match phylogenies with locality data.
+  contents:
+  - prep_phylo
+  - match_island_phylo
+- title: Ancestral state reconstruction
+  contents:
+  - run_geo_asr
+  - simmap_insitu
+- title: Classifying events
+  desc: Classify nodes as in situ speciation, colonization, or dispersal.
+  contents:
+  - map_insitu_events
+  - insitu_confidence
+  - age_correct_events
+- title: Diversity decomposition and rates
+  contents:
+  - decompose_diversity
+  - insitu_speciation_index
+  - insitu_rate_by_island_age
+- title: Simulation and power
+  contents:
+  - simulate_island
+  - insitu_power
+- title: Plotting
+  contents:
+  - plot_classified_phylo
+  - plot_diversity_decomposition
+  - plot_simulated_island
