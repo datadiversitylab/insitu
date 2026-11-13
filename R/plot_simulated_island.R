@@ -5,6 +5,11 @@
 #'   \code{phy}, \code{PAM}, and \code{true_events}.
 #'
 #' @return Invisibly returns NULL.
+#'
+#' @importFrom stats setNames
+#' @importFrom grDevices palette.colors
+#' @importFrom graphics legend
+#'
 #' @export
 plot_simulated_island <- function(sim) {
   phy    <- sim$phy

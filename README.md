@@ -1,4 +1,5 @@
-# insitu
+# insitu <img src="man/figures/logo.png" align="right" height="139" alt="" />
+
 An R package for detecting *in situ* speciation and providing a clearer picture of how biodiversity emerged on isolated systems.
 
 ## Overview

@@ -40,6 +40,8 @@
 #' @return A named list with elements \code{phy}, \code{PAM}, and
 #'   \code{true_events}.
 #'
+#' @importFrom stats setNames
+#'
 #' @export
 simulate_island <- function(n_tips,
                             diversification_rate,

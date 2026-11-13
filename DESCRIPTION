@@ -1,21 +1,29 @@
 Package: insitu
 Title: Estimating in situ Speciation on Island Systems
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
     person("Kristen", "Martinet", , "kmartinet@arizona.edu", role = c("aut", "cre")),
     person("Cristian", "Román-Palacios", , "cromanpa@arizona.edu", role = c("aut", "ctb"))
     )
-Description: What the package does (one paragraph).
-License: GPL (>=2)
+Description: Estimates in situ speciation events and quantifies their
+    contribution to biodiversity in discrete geographical units, with a focus
+    on islands and island-like environments. Nodes in a phylogeny are
+    classified as in situ speciation, colonization, or dispersal events.
+    The package also computes diversity decomposition metrics and includes
+    functions to visualize the results.
+License: GPL (>= 3)
 Encoding: UTF-8
 Imports:
     ape,
     cli,
     dplyr,
     geiger,
+    graphics,
+    grDevices,
     phytools,
     reshape2,
     rlang,
+    stats,
     utils
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

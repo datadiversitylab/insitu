@@ -4,3 +4,7 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^data-raw$
+^man/figures/logo\.pdf$
+^man/figures/logo\.svg$
+^LICENSE\.md$
