@@ -13,7 +13,12 @@
 
 plot_classified_phylo <- function(phy, events, PAM){
   islands <- PAM$locale
-  colors <- stats::setNames(grDevices::palette.colors(length(islands), "Okabe-Ito"), islands)
+
+  # Colors (safe when >8)
+  n <- length(islands)
+  base_pal <- grDevices::palette.colors(min(n, 8L), "Okabe-Ito")
+  pal <- if (n <= 8L) base_pal else grDevices::colorRampPalette(base_pal)(n)
+  colors <- stats::setNames(pal, islands)
 
   # Plot the basic phylogeny, but add a label offset for the pie charts and
   #  some extra space for the legend

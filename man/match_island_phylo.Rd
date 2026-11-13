@@ -10,7 +10,7 @@ match_island_phylo(phy, locs, exclude = TRUE)
 \item{phy}{The phylogenetic tree associated with your data}
 
 \item{locs}{A dataframe with two columns: "species" and "locale". Each row
-should represent a single locality where that species is located (e.x., if
+should represent a single locality where that species is located (e.g., if
 a species is found in multiple localities, there should be multiple rows for
 that species). This package focuses on island occurrences, so if a species is
 found on the mainland, write its locality as "Mainland".}
