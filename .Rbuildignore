@@ -8,3 +8,5 @@
 ^man/figures/logo\.pdf$
 ^man/figures/logo\.svg$
 ^LICENSE\.md$
+vignettes/precompile.R
+vignettes/*.Rmd.orig

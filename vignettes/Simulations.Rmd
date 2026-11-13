@@ -7,12 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment  = "#>"
-)
-```
+
 
 ## Overview
 
@@ -41,7 +36,8 @@ system after the initial colonization. Net diversification and extinction
 fraction can differ between the mainland and island portions of the tree,
 reflecting the faster radiation typically observed on islands.
 
-```{r simulate}
+
+``` r
 library(insitu)
 
 sim <- simulate_island(
@@ -58,16 +54,26 @@ sim <- simulate_island(
 )
 
 ape::Ntip(sim$phy)
+#> [1] 30
 head(sim$PAM[, 1:5])
+#>     locale spM_1 spM_2 spM_3 spM_4
+#> 1 island_1     0     0     0     0
+#> 2 island_2     0     0     0     0
+#> 3 island_3     0     0     0     0
+#> 4 Mainland     1     1     1     1
 nrow(sim$true_events)
+#> [1] 10
 ```
 
 `true_events` is the ground truth. Every row in this object is a node the simulation
 placed as an in-situ speciation event, with the island it occurred on.
 
-```{r plot_sim, fig.width = 7, fig.height = 5}
+
+``` r
 plot_simulated_island(sim)
 ```
+
+![plot of chunk plot_sim](insitu-plot_sim-1.png)
 
 Tips are colored by island, grey for mainland. Filled circles mark the
 true in-situ nodes from `true_events`.
@@ -78,7 +84,8 @@ Run the standard pipeline exactly as you would on real data. The only
 difference is that you can compare the recovered events to `true_events`
 afterwards.
 
-```{r pipeline, warning = FALSE}
+
+``` r
 recons <- run_geo_asr(phy = sim$phy, PAM = sim$PAM, model = "ER")
 
 events <- map_insitu_events(
@@ -99,8 +106,11 @@ precision   <- tp / max(1L, length(pipeline_pairs))
 f1          <- 2 * sensitivity * precision / (sensitivity + precision)
 
 cat("Sensitivity:", round(sensitivity, 2), "\n")
+#> Sensitivity: 0.9
 cat("Precision:  ", round(precision,   2), "\n")
+#> Precision:   0.6
 cat("F1:         ", round(f1,          2), "\n")
+#> F1:          0.72
 ```
 
 ## Power analysis across 100 replicates
@@ -110,7 +120,8 @@ runs the full simulation-and-pipeline cycle repeatedly and returns
 sensitivity and precision for each replicate, so you can compute F1 and
 summarize its distribution.
 
-```{r power, eval = FALSE}
+
+``` r
 res <- insitu_power(
   n_sim                       = 100,
   n_tips                      = 30,
@@ -153,7 +164,8 @@ colonizations are likely.
 Sweeping `threshold` is the most practical calibration step because
 it is the one setting you control directly in `map_insitu_events`:
 
-```{r calibrate, eval = FALSE}
+
+``` r
 thresholds <- c(0.5, 0.6, 0.75, 0.9)
 
 power_by_threshold <- do.call(rbind, lapply(thresholds, function(thr) {
@@ -184,7 +196,8 @@ power_by_threshold <- do.call(rbind, lapply(thresholds, function(thr) {
 print(power_by_threshold)
 ```
 
-```{r plot_calibration, eval = FALSE}
+
+``` r
 plot(power_by_threshold$threshold, power_by_threshold$f1_mean,
      type  = "b",
      pch   = 19,

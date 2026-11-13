@@ -2,8 +2,10 @@ Package: insitu
 Title: Estimating in situ Speciation on Island Systems
 Version: 0.1.0
 Authors@R: c(
-    person("Kristen", "Martinet", , "kmartinet@arizona.edu", role = c("aut", "cre")),
-    person("Cristian", "Román-Palacios", , "cromanpa@arizona.edu", role = c("aut", "ctb"))
+    person("Kristen", "Martinet", , "kmartinet@outlook.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3905-9507")),
+    person("Cristian", "Román-Palacios", , "cromanpa@arizona.edu", role = "aut",
+           comment = c(ORCID = "0000-0003-1696-4886"))
     )
 Description: Estimates in situ speciation events and quantifies their
     contribution to biodiversity in discrete geographical units, with a focus
@@ -13,6 +15,7 @@ Description: Estimates in situ speciation events and quantifies their
     functions to visualize the results.
 License: GPL (>= 3)
 Encoding: UTF-8
+Date: 2026-11-13
 Imports:
     ape,
     cli,

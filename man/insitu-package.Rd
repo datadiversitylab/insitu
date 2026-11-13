@@ -18,11 +18,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Kristen Martinet \email{kmartinet@arizona.edu}
+\strong{Maintainer}: Kristen Martinet \email{kmartinet@outlook.com} (\href{https://orcid.org/0000-0002-3905-9507}{ORCID})
 
 Authors:
 \itemize{
-  \item Cristian Román-Palacios \email{cromanpa@arizona.edu} [contributor]
+  \item Cristian Román-Palacios \email{cromanpa@arizona.edu} (\href{https://orcid.org/0000-0003-1696-4886}{ORCID})
 }
 
 }
